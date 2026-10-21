@@ -1,7 +1,7 @@
 <?php include 'includes/header.php';?>
     <main>
       <div class="container mt-5">
-            <h1>Bem-vindo à Saúde Animal Agro e Vet</h1>
+            <h1>Bem vindo à Saúde Animal Agro e Vet</h1>
             <p>Encontre os melhores produtos para o cuidado dos seus animais de estimação e para a agricultura.</p>
       </div>
         <div class="container-fluid p-0 position-relative">
