@@ -1,54 +1,18 @@
-
 import express from "express";
 import bcrypt from "bcrypt";
 import { banco } from "./database";
+import { Usuario } from "./models/Usuario";
 
 const app = express();
 
 app.use(express.json());
 
-
-
-
+// ROTA INICIAL
 app.get("/", (req, res) => {
     res.send("API AgroVet funcionando!");
 });
 
-
-
-
-function validarCPF(cpf: string): boolean {
-    const numeros = cpf.replace(/\D/g, "");
-
-    if (numeros.length !== 11) {
-        return false;
-    }
-
-    if (/^(\d)\1{10}$/.test(numeros)) {
-        return false;
-    }
-
-    for (let digito = 9; digito < 11; digito++) {
-        let soma = 0;
-
-        for (let i = 0; i < digito; i++) {
-            soma += Number(numeros[i]) * (digito + 1 - i);
-        }
-
-        const resto = (soma * 10) % 11;
-        const verificador = resto === 10 ? 0 : resto;
-
-        if (verificador !== Number(numeros[digito])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-
-
-
+// VALIDAÇÃO DE SENHA
 function validarSenha(senha: string): boolean {
     const tamanhoMinimo = senha.length >= 8;
     const letraMaiuscula = /[A-Z]/.test(senha);
@@ -65,12 +29,11 @@ function validarSenha(senha: string): boolean {
     );
 }
 
-
-
+// CADASTRO DE USUÁRIOS
 app.post("/usuarios", async (req, res) => {
     const { nome, email, senha, cpf } = req.body ?? {};
 
-    // Verifica os campos obrigatórios
+    // VERIFICAÇÃO DOS CAMPOS OBRIGATÓRIOS
     if (
         typeof nome !== "string" || !nome.trim() ||
         typeof email !== "string" || !email.trim() ||
@@ -82,47 +45,29 @@ app.post("/usuarios", async (req, res) => {
         });
     }
 
-    // Valida o formato do e-mail
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!regexEmail.test(email.trim())) {
-        return res.status(400).json({
-            mensagem: "Formato de e-mail inválido!"
-        });
-    }
-
-    // Valida o CPF
-    if (!validarCPF(cpf)) {
-        return res.status(400).json({
-            mensagem: "CPF inválido!"
-        });
-    }
-
-    // Valida a senha
+    // VALIDAÇÃO DO NÍVEL DE SENHA
     if (!validarSenha(senha)) {
         return res.status(400).json({
             mensagem: "A senha não atende aos requisitos de segurança!"
         });
     }
 
-
-
-
     try {
-        // Remove pontos e traços do CPF
-        const cpfLimpo = cpf.replace(/\D/g, "");
+        // CRIAÇÃO DO OBJETO USUÁRIO
+        // O construtor executa as validações de nome, email e CPF.
+        const usuario = new Usuario(nome, email, cpf);
 
-        // Gera um hash seguro da senha
+        // CRIPTOGRAFIA DA SENHA
         const senhaHash = await bcrypt.hash(senha, 12);
 
-        // Insere os dados na tabela usuario
+        // INSERÇÃO NO BANCO DE DADOS
         await banco.execute(
             `INSERT INTO usuario (nome, email, cpf, senha)
              VALUES (?, ?, ?, ?)`,
             [
-                nome.trim(),
-                email.trim(),
-                cpfLimpo,
+                usuario.nome,
+                usuario.email,
+                usuario.cpf,
                 senhaHash
             ]
         );
@@ -132,9 +77,21 @@ app.post("/usuarios", async (req, res) => {
         });
 
     } catch (erro: unknown) {
+
+        // ERROS DE VALIDAÇÃO DA CLASSE USUÁRIO
+        if (erro instanceof Error && (
+            erro.message === "O nome não pode estar vazio!" ||
+            erro.message === "Formato de e-mail inválido!" ||
+            erro.message === "CPF inválido!"
+        )) {
+            return res.status(400).json({
+                mensagem: erro.message
+            });
+        }
+
+        // ERROS DE DUPLICIDADE NO MYSQL
         const erroBanco = erro as { code?: string };
 
-        // E-mail ou CPF duplicado
         if (erroBanco.code === "ER_DUP_ENTRY") {
             return res.status(409).json({
                 mensagem: "E-mail ou CPF já cadastrado!"
@@ -149,15 +106,14 @@ app.post("/usuarios", async (req, res) => {
     }
 });
 
-
+// INICIALIZAÇÃO DO SERVIDOR
 const PORT = 3000;
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
 
-
-
+// TESTE DE CONEXÃO COM MYSQL
 async function testarConexao() {
     try {
         const conexao = await banco.getConnection();
