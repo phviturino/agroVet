@@ -1,3 +1,5 @@
+import bcrypt from 'bcrypt';
+import { Usuario } from './models/Usuario';
 import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
@@ -277,6 +279,91 @@ app.delete('/api/fornecedores/:id', async (req, res) => {
     res.json({ message: 'Fornecedor excluído com sucesso!' });
   } catch (error) {
     res.status(500).json({ erro: 'Erro ao excluir fornecedor.' });
+  }
+});
+
+/* ==========================================================================
+   4. ROTAS DE USUÁRIOS
+   ========================================================================== */
+
+// CADASTRAR USUÁRIO
+app.post('/api/usuarios', async (req, res) => {
+  const { nome, email, senha, cpf } = req.body ?? {};
+
+  // Verificação dos campos obrigatórios
+  if (
+    typeof nome !== 'string' || !nome.trim() ||
+    typeof email !== 'string' || !email.trim() ||
+    typeof senha !== 'string' || !senha ||
+    typeof cpf !== 'string' || !cpf.trim()
+  ) {
+    return res.status(400).json({
+      mensagem: 'Todos os campos são obrigatórios!'
+    });
+  }
+
+  // Validação do nível da senha
+  const senhaValida =
+    senha.length >= 8 &&
+    /[A-Z]/.test(senha) &&
+    /[a-z]/.test(senha) &&
+    /[0-9]/.test(senha) &&
+    /[^A-Za-z0-9]/.test(senha);
+
+  if (!senhaValida) {
+    return res.status(400).json({
+      mensagem: 'A senha deve ter pelo menos 8 caracteres, letra maiúscula, minúscula, número e caractere especial.'
+    });
+  }
+
+  try {
+    // Criação do objeto e execução das validações
+    const usuario = new Usuario(nome, email, cpf);
+
+    // Criptografia da senha
+    const senhaHash = await bcrypt.hash(senha, 12);
+
+    // Inserção no banco que você já utiliza
+    await db.execute(
+      `INSERT INTO usuario (nome, email, cpf, senha)
+       VALUES (?, ?, ?, ?)`,
+      [
+        usuario.nome,
+        usuario.email,
+        usuario.cpf,
+        senhaHash
+      ]
+    );
+
+    return res.status(201).json({
+      mensagem: 'Usuário cadastrado com sucesso!'
+    });
+
+  } catch (erro: unknown) {
+
+    if (erro instanceof Error && [
+      'O nome não pode estar vazio!',
+      'Formato de e-mail inválido!',
+      'CPF inválido!'
+    ].includes(erro.message)) {
+      return res.status(400).json({
+        mensagem: erro.message
+      });
+    }
+
+    const erroBanco = erro as { code?: string };
+
+    if (erroBanco.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        mensagem: 'E-mail ou CPF já cadastrado!'
+      });
+    }
+
+    console.error('Erro ao cadastrar usuário:', erro);
+
+    return res.status(500).json({
+      mensagem: 'Erro interno ao cadastrar usuário!'
+    });
   }
 });
 

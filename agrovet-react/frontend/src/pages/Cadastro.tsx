@@ -6,11 +6,42 @@ function Cadastro() {
     const [confirmarSenha, setConfirmarSenha] = useState("");
     const [mensagem, setMensagem] = useState("");
 
-        function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
+    const [mostrarSenha, setMostrarSenha] = useState(false);
+    const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
+
+    const [cpf, setCpf] = useState("");
+    const [telefone, setTelefone] = useState("");
+
+    function formatarCPF(valor: string) {
+        const numeros = valor.replace(/\D/g, "").slice(0, 11);
+
+        return numeros
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    }
+
+    function formatarTelefone(valor: string) {
+        const numeros = valor.replace(/\D/g, "").slice(0, 11);
+
+        if (numeros.length <= 10) {
+            return numeros
+                .replace(/(\d{2})(\d)/, "($1) $2")
+                .replace(/(\d{4})(\d)/, "$1-$2");
+        }
+
+        return numeros
+            .replace(/(\d{2})(\d)/, "($1) $2")
+            .replace(/(\d{5})(\d)/, "$1-$2");
+    }
+
+    function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
         event.preventDefault();
 
         if (senha !== confirmarSenha) {
-            setMensagem("As senhas não são iguais. Por favor verifique e tente novamente.");
+            setMensagem(
+                "As senhas não são iguais. Por favor, verifique e tente novamente."
+            );
             return;
         }
 
@@ -53,6 +84,10 @@ function Cadastro() {
                             id="cpf"
                             name="cpf"
                             placeholder="000.000.000-00"
+                            value={cpf}
+                            onChange={(event) =>
+                                setCpf(formatarCPF(event.target.value))
+                            }
                             required
                         />
                     </div>
@@ -64,39 +99,82 @@ function Cadastro() {
                             id="telefone"
                             name="telefone"
                             placeholder="(00) 00000-0000"
+                            value={telefone}
+                            onChange={(event) =>
+                                setTelefone(formatarTelefone(event.target.value))
+                            }
                             required
                         />
                     </div>
 
                     <div className="campo">
                         <label htmlFor="senha">Senha</label>
-                        <input
-                            type="password"
-                            id="senha"
-                            name="senha"
-                            placeholder="Crie uma senha"
-                            value={senha}
-                            onChange={(event) => setSenha(event.target.value)}
-                            required
-                        />
+
+                        <div className="senha-input-wrapper">
+                            <input
+                                type={mostrarSenha ? "text" : "password"}
+                                id="senha"
+                                name="senha"
+                                placeholder="Crie uma senha"
+                                value={senha}
+                                onChange={(event) => setSenha(event.target.value)}
+                                required
+                            />
+
+                            <button
+                                type="button"
+                                className="btn-mostrar-senha"
+                                onClick={() => setMostrarSenha(!mostrarSenha)}
+                                aria-label={
+                                    mostrarSenha ? "Ocultar senha" : "Mostrar senha"
+                                }
+                            >
+                                <i
+                                    className={`bi ${
+                                        mostrarSenha ? "bi-eye-slash" : "bi-eye"
+                                    }`}
+                                ></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div className="campo">
                         <label htmlFor="confirmarSenha">Confirmar senha</label>
-                        <input
-                            type="password"
-                            id="confirmarSenha"
-                            name="confirmarSenha"
-                            placeholder="Digite a senha novamente"
-                            value={confirmarSenha}
-                            onChange={(event) => setConfirmarSenha(event.target.value)}
-                            required
-                        />
+
+                        <div className="senha-input-wrapper">
+                            <input
+                                type={mostrarConfirmarSenha ? "text" : "password"}
+                                id="confirmarSenha"
+                                name="confirmarSenha"
+                                placeholder="Digite a senha novamente"
+                                value={confirmarSenha}
+                                onChange={(event) => setConfirmarSenha(event.target.value)}
+                                required
+                            />
+
+                            <button
+                                type="button"
+                                className="btn-mostrar-senha"
+                                onClick={() =>
+                                    setMostrarConfirmarSenha(!mostrarConfirmarSenha)
+                                }
+                                aria-label={
+                                    mostrarConfirmarSenha
+                                        ? "Ocultar confirmação de senha"
+                                        : "Mostrar confirmação de senha"
+                                }
+                            >
+                                <i className={`bi ${ mostrarConfirmarSenha ? "bi-eye-slash" : "bi-eye" }`}></i>
+                            </button>
+                        </div>
                     </div>
 
                     {mensagem && (
-                        <p className="mensagem-cadastro" role="status">{mensagem}</p>
+                        <p className="mensagem-cadastro" role="status"> 
+                            {mensagem}
+                        </p>
                     )}
+
                     <button type="submit">Cadastrar</button>
                 </form>
 
