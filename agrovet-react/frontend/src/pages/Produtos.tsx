@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-// Interfaces tipadas para o TypeScript
 interface Produto {
   id: number;
   nome: string;
@@ -9,37 +9,35 @@ interface Produto {
   categoria?: string;
 }
 
-interface CategoriaStats {
-  totalValor: number;
-  destaque: string;
-}
-
 export default function Produtos() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [categorias, setCategorias] = useState<string[]>([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>('Todas');
   const [ordemDecrescente, setOrdemDecrescente] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [stats, setStats] = useState<CategoriaStats>({ totalValor: 0, destaque: 'Geral' });
 
-  // Pega o parâmetro "?busca=..." da URL do navegador
   const searchParams = new URLSearchParams(window.location.search);
   const termoBusca = searchParams.get('busca') || '';
 
-  // 1. Busca os produtos da API Node.js/Express
   useEffect(() => {
     setLoading(true);
 
+    // Ajuste aqui para a porta onde o seu backend Node.js está rodando (ex: 3001)
+    const baseUrl = 'http://localhost:3001/api/produtos';
     const url = termoBusca
-      ? `/api/produtos?busca=${encodeURIComponent(termoBusca)}`
-      : '/api/produtos';
+      ? `${baseUrl}?busca=${encodeURIComponent(termoBusca)}`
+      : baseUrl;
 
     fetch(url)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Falha ao buscar produtos da API');
+        }
+        return res.json();
+      })
       .then((data: Produto[]) => {
         setProdutos(data);
 
-        // Extrai as categorias únicas a partir dos produtos
         const catsUnicas = Array.from(
           new Set(data.map((p) => p.categoria).filter(Boolean))
         ) as string[];
@@ -53,7 +51,6 @@ export default function Produtos() {
       });
   }, [termoBusca]);
 
-  // 2. Filtra por categoria e ordena A-Z / Z-A
   const produtosFiltrados = produtos
     .filter((p) => {
       if (categoriaSelecionada === 'Todas') return true;
@@ -65,18 +62,6 @@ export default function Produtos() {
       }
       return a.nome.localeCompare(b.nome);
     });
-
-  // 3. Atualiza os cards de valor total e destaque da categoria
-  useEffect(() => {
-    const total = produtosFiltrados.reduce(
-      (acc, p) => acc + Number(p.preço || 0),
-      0
-    );
-    setStats({
-      totalValor: total,
-      destaque: categoriaSelecionada === 'Todas' ? 'Geral' : categoriaSelecionada,
-    });
-  }, [categoriaSelecionada, produtos]);
 
   return (
     <main className="container mt-5 mb-5">
@@ -98,31 +83,6 @@ export default function Produtos() {
             {cat}
           </button>
         ))}
-      </div>
-
-      {/* Cards Informativos da Categoria */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-6">
-          <div className="bg-light rounded p-3 text-center h-100 shadow-sm">
-            <p className="text-muted mb-1 small">Valor total nessa categoria</p>
-            <p id="total-categoria" className="fw-bold fs-5 m-0 text-dark">
-              R${' '}
-              {stats.totalValor.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </p>
-          </div>
-        </div>
-
-        <div className="col-md-6">
-          <div className="bg-warning bg-opacity-25 rounded p-3 text-center h-100 shadow-sm">
-            <p className="text-muted mb-1 small">Categoria em destaque</p>
-            <p id="categoria-destaque" className="fw-bold fs-5 m-0 text-dark">
-              {stats.destaque}
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Título do Catálogo */}
@@ -188,7 +148,7 @@ export default function Produtos() {
                     href={`/produtos/${produto.id}`}
                     className="btn btn-success btn-sm w-100 fw-bold py-2 text-uppercase mt-auto stretched-link"
                   >
-                    Ver Produtos
+                    Ver Produto
                   </a>
                 </div>
               </div>

@@ -14,8 +14,13 @@ export default function Inicio() {
 
   // Busca os produtos em destaque da API Node.js assim que a tela carrega
   useEffect(() => {
-    fetch('/api/produtos/destaque')
-      .then((res) => res.json())
+    fetch('http://localhost:3001/api/produtos/destaque')
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Falha ao carregar destaques');
+        }
+        return res.json();
+      })
       .then((data: Produto[]) => {
         setProdutos(data);
         setLoading(false);
@@ -24,13 +29,13 @@ export default function Inicio() {
         console.error('Erro ao buscar produtos em destaque:', err);
         setLoading(false);
       });
-  }, []);
+  }, []); 
 
   return (
     <main>
       {/* Banner de Boas-Vindas */}
       <div className="container mt-5">
-        <h1>Bem-vindo à Saúde Animal Agro e Vet</h1>
+        <h1 className='text-dark'>Bem-vindo à Saúde Animal Agro e Vet</h1>
         <p>
           Encontre os melhores produtos para o cuidado dos seus animais de
           estimação e para a agricultura.
