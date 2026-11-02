@@ -1,4 +1,5 @@
 import { useState, type SyntheticEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Cadastro.css";
 
 function Cadastro() {
@@ -11,6 +12,8 @@ function Cadastro() {
 
     const [cpf, setCpf] = useState("");
     const [telefone, setTelefone] = useState("");
+
+    const navigate = useNavigate();
 
     function formatarCPF(valor: string) {
         const numeros = valor.replace(/\D/g, "").slice(0, 11);
@@ -35,18 +38,60 @@ function Cadastro() {
             .replace(/(\d{5})(\d)/, "$1-$2");
     }
 
-    function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
-        event.preventDefault();
+    
+async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-        if (senha !== confirmarSenha) {
-            setMensagem(
-                "As senhas não são iguais. Por favor, verifique e tente novamente."
+    if (senha !== confirmarSenha) {
+        setMensagem("As senhas não são iguais. Verifique e tente novamente.");
+        return;
+    }
+
+    setMensagem("Cadastrando...");
+
+    const formulario = new FormData(event.currentTarget);
+
+    const dados = {
+        nome: String(formulario.get("nome") ?? "").trim(),
+        email: String(formulario.get("email") ?? "").trim(),
+        cpf: cpf.replace(/\D/g, ""),
+        telefone: telefone.replace(/\D/g, ""),
+        senha,
+    };
+
+    try {
+        const resposta = await fetch("http://localhost:3001/api/usuarios", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dados),
+        });
+
+        const resultado = await resposta.json();
+
+        if (!resposta.ok) {
+            throw new Error(
+                resultado.mensagem || "Não foi possível realizar o cadastro."
             );
-            return;
         }
 
         setMensagem("Cadastro realizado com sucesso!");
+
+        // Aguarda um instante para exibir a mensagem
+        setTimeout(() => {
+            navigate("/login");
+        }, 1000);
+
+    } catch (erro) {
+        if (erro instanceof Error) {
+            setMensagem(erro.message);
+        } else {
+            setMensagem("Erro ao conectar com o servidor.");
+        }
     }
+}
+
 
     return (
         <main className="cadastro-container">
@@ -130,9 +175,8 @@ function Cadastro() {
                                 }
                             >
                                 <i
-                                    className={`bi ${
-                                        mostrarSenha ? "bi-eye-slash" : "bi-eye"
-                                    }`}
+                                    className={`bi ${mostrarSenha ? "bi-eye-slash" : "bi-eye"
+                                        }`}
                                 ></i>
                             </button>
                         </div>
@@ -164,13 +208,13 @@ function Cadastro() {
                                         : "Mostrar confirmação de senha"
                                 }
                             >
-                                <i className={`bi ${ mostrarConfirmarSenha ? "bi-eye-slash" : "bi-eye" }`}></i>
+                                <i className={`bi ${mostrarConfirmarSenha ? "bi-eye-slash" : "bi-eye"}`}></i>
                             </button>
                         </div>
                     </div>
 
                     {mensagem && (
-                        <p className="mensagem-cadastro" role="status"> 
+                        <p className="mensagem-cadastro" role="status">
                             {mensagem}
                         </p>
                     )}
