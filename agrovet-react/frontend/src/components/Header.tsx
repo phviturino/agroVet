@@ -74,12 +74,14 @@ export default function Header({ mostrarCatalogo = false }: HeaderProps) {
             </div>
 
             <div className="col-md-3">
-              <div className="d-flex align-items-center justify-content-end info-contato">
-                <a href="/contato" className="btn-contato">
-                  <i className="bi bi-whatsapp"></i> Fale conosco
+              <div className="d-flex align-items-center justify-content-end">
+                <a href="/cadastro" className="btn btn-outline-success">
+                  <i className="bi bi-person-circle me-2"></i>
+                  Cadastro
                 </a>
               </div>
             </div>
+
           </div>
 
           {/* Busca e contato para dispositivos móveis */}
@@ -108,13 +110,6 @@ export default function Header({ mostrarCatalogo = false }: HeaderProps) {
               </button>
             </form>
 
-            <a
-              href="/contato"
-              className="btn-contato-mobile ms-2"
-              aria-label="Fale conosco pelo WhatsApp"
-            >
-              <i className="bi bi-whatsapp"></i>
-            </a>
           </div>
         </div>
       </nav>

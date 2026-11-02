@@ -1,0 +1,87 @@
+.cadastro-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 16px;
+  background-color: #f3f5f2;
+}
+
+.cadastro-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 32px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.cadastro-card h1 {
+  margin-bottom: 8px;
+  color: #245c35;
+  text-align: center;
+}
+
+.cadastro-card > p {
+  margin-bottom: 24px;
+  color: #666;
+  text-align: center;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.campo label {
+  font-weight: 600;
+  color: #333;
+}
+
+.campo input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.campo input:focus {
+  outline: 2px solid #3b8050;
+  border-color: transparent;
+}
+
+.cadastro-card button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: #245c35;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cadastro-card button:hover {
+  background-color: #194527;
+}
+
+.login-link {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.login-link a {
+  color: #245c35;
+  font-weight: 600;
+  text-decoration: none;
+}
+.mensagem-cadastro {
+  color: #b02a37;
+  font-size: 14px;
+  text-align: center;
+  margin: 12px 0;
+}

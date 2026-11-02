@@ -5,6 +5,8 @@ import Produtos from './pages/Produtos';
 import DetalheProduto from './pages/DetalheProduto';
 import Contato from './pages/Contato';
 import AdminIndex from './pages/admin/AdminIndex';
+import WhatsAppFloat from "./components/WhatsAppFloat";
+import Cadastro from './pages/Cadastro';
 
 export default function App() {
   // Pega a rota atual do navegador
@@ -32,6 +34,10 @@ export default function App() {
       return <Contato />;
     }
 
+     if (path == '/cadastro') {
+      return <Cadastro />;
+    }
+
     // 5. Página Inicial (padrão)
     return <Inicio />;
   };
@@ -52,6 +58,8 @@ export default function App() {
       <main className="flex-grow-1">
         {renderPage()}
       </main>
+
+      <WhatsAppFloat />
 
       <Footer />
     </div>
