@@ -5,12 +5,19 @@ export class Usuario {
     #nome!: string;
     #email!: string;
     #cpf!: string;
+    #telefone!: string;
 
     // CONSTRUTOR
-    constructor(nome: string, email: string, cpf: string) {
+    constructor(
+        nome: string,
+        email: string,
+        cpf: string,
+        telefone: string
+    ) {
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
+        this.telefone = telefone;
     }
 
     // GETTERS
@@ -24,6 +31,10 @@ export class Usuario {
 
     get cpf(): string {
         return this.#cpf;
+    }
+
+    get telefone(): string {
+        return this.#telefone;
     }
 
     // SETTERS
@@ -54,5 +65,19 @@ export class Usuario {
         }
 
         this.#cpf = novoCPF.replace(/\D/g, "");
+    }
+
+    set telefone(novoTelefone: string) {
+        const telefoneLimpo = novoTelefone.replace(/\D/g, "");
+
+        if (
+            typeof novoTelefone !== "string" ||
+            telefoneLimpo.length < 10 ||
+            telefoneLimpo.length > 11
+        ) {
+            throw new Error("Telefone inválido!");
+        }
+
+        this.#telefone = telefoneLimpo;
     }
 }

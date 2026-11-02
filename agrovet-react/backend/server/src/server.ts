@@ -288,14 +288,15 @@ app.delete('/api/fornecedores/:id', async (req, res) => {
 
 // CADASTRAR USUÁRIO
 app.post('/api/usuarios', async (req, res) => {
-  const { nome, email, senha, cpf } = req.body ?? {};
+  const { nome, email, senha, cpf, telefone } = req.body ?? {};
 
   // Verificação dos campos obrigatórios
   if (
     typeof nome !== 'string' || !nome.trim() ||
     typeof email !== 'string' || !email.trim() ||
     typeof senha !== 'string' || !senha ||
-    typeof cpf !== 'string' || !cpf.trim()
+    typeof cpf !== 'string' || !cpf.trim() ||
+    typeof telefone !== 'string' || !telefone.trim()
   ) {
     return res.status(400).json({
       mensagem: 'Todos os campos são obrigatórios!'
@@ -318,19 +319,20 @@ app.post('/api/usuarios', async (req, res) => {
 
   try {
     // Criação do objeto e execução das validações
-    const usuario = new Usuario(nome, email, cpf);
+    const usuario = new Usuario(nome, email, cpf, telefone);
 
     // Criptografia da senha
     const senhaHash = await bcrypt.hash(senha, 12);
 
-    // Inserção no banco que você já utiliza
+    // Inserção no banco
     await db.execute(
-      `INSERT INTO usuario (nome, email, cpf, senha)
-       VALUES (?, ?, ?, ?)`,
+      `INSERT INTO usuario (nome, email, cpf, telefone, senha)
+       VALUES (?, ?, ?, ?, ?)`,
       [
         usuario.nome,
         usuario.email,
         usuario.cpf,
+        usuario.telefone,
         senhaHash
       ]
     );
@@ -340,11 +342,11 @@ app.post('/api/usuarios', async (req, res) => {
     });
 
   } catch (erro: unknown) {
-
     if (erro instanceof Error && [
       'O nome não pode estar vazio!',
       'Formato de e-mail inválido!',
-      'CPF inválido!'
+      'CPF inválido!',
+      'Telefone inválido!'
     ].includes(erro.message)) {
       return res.status(400).json({
         mensagem: erro.message
@@ -367,7 +369,7 @@ app.post('/api/usuarios', async (req, res) => {
   }
 });
 
-// Inicialização do Servidor
+// Inicialização do servidor
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor backend a rodar em http://localhost:${PORT}`);
+  console.log(`🚀 Servidor backend rodando em http://localhost:${PORT}`);
 });
