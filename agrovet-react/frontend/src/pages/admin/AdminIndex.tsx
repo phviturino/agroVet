@@ -58,7 +58,6 @@ export default function AdminIndex() {
     setOpcao(tela);
   };
 
-  // BUSCA DOS DADOS DA API
   useEffect(() => {
     if (opcao !== 'menu') return;
 
@@ -82,7 +81,6 @@ export default function AdminIndex() {
         const categorias = resCategorias.data;
         const fornecedores = resFornecedores.data;
 
-        // GRÁFICO DE BARRAS: PRODUTOS POR CATEGORIA
         const categoriasGrafico = categorias.map((categoria) => ({
           nome: categoria.nome,
           quantidade: produtos.filter(
@@ -103,7 +101,6 @@ export default function AdminIndex() {
 
         setDadosCategorias(categoriasGrafico);
 
-        // GRÁFICO DE COLUNAS: RESUMO DOS CADASTROS
         setDadosResumo([
           { nome: 'Produtos', quantidade: produtos.length },
           { nome: 'Categorias', quantidade: categorias.length },
@@ -149,7 +146,7 @@ export default function AdminIndex() {
 
       {opcao === 'menu' && (
         <>
-          {/* MENU ADMINISTRATIVO */}
+
           <div className="row g-4">
             <div className="col-md-4">
               <div className="card h-100 shadow-sm border-0 bg-dark text-white p-4">
@@ -232,7 +229,6 @@ export default function AdminIndex() {
             ) : (
               <div className="row g-4">
 
-                {/* GRÁFICO DE BARRAS HORIZONTAIS */}
                 <div className="col-lg-6">
                   <div className="card shadow-sm border-0 p-4 h-100">
                     <h5 className="fw-bold mb-2">
@@ -294,7 +290,6 @@ export default function AdminIndex() {
                   </div>
                 </div>
 
-                {/* GRÁFICO DE COLUNAS VERTICAIS */}
                 <div className="col-lg-6">
                   <div className="card shadow-sm border-0 p-4 h-100">
                     <h5 className="fw-bold mb-2">
@@ -345,12 +340,10 @@ export default function AdminIndex() {
         </>
       )}
 
-      {/* CADASTROS */}
       {opcao === 'cadastrar-produto' && <ProdutoCreatePage />}
       {opcao === 'cadastrar-categoria' && <CategoriaCreatePage />}
       {opcao === 'cadastrar-fornecedor' && <FornecedorCreatePage />}
 
-      {/* LISTAGENS */}
       {opcao === 'listar-produto' && (
         <ProdutoListPage
           onEdit={(id) => handleEdit('editar-produto', id)}
@@ -369,7 +362,6 @@ export default function AdminIndex() {
         />
       )}
 
-      {/* EDIÇÕES */}
       {opcao === 'editar-produto' && editId !== null && (
         <ProdutoEditPage
           produtoId={editId}

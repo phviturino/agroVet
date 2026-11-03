@@ -24,7 +24,7 @@ export default function Header({ mostrarCatalogo = false }: HeaderProps) {
     <header>
       <nav className="navbar-dark py-3">
         <div className="container-fluid px-3">
-          {/* Logo para dispositivos móveis */}
+          
           <div className="d-flex justify-content-center mb-3 d-md-none">
             <a className="logo" href="/">
               <img
@@ -35,7 +35,6 @@ export default function Header({ mostrarCatalogo = false }: HeaderProps) {
             </a>
           </div>
 
-          {/* Cabeçalho para telas médias e grandes */}
           <div className="row align-items-center d-none d-md-flex">
             <div className="col-md-3">
               <a className="logo" href="/">
@@ -84,7 +83,6 @@ export default function Header({ mostrarCatalogo = false }: HeaderProps) {
 
           </div>
 
-          {/* Busca e contato para dispositivos móveis */}
           <div className="d-md-none d-flex align-items-center">
             <form
               onSubmit={handleBusca}

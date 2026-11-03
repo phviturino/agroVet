@@ -33,7 +33,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-dark text-white pt-5 pb-3">
       <div className="container">
-        {/* Banner Superior e Descrição */}
+
         <div className="row align-items-center mb-3">
           <div className="col-md-3">
             <img
@@ -74,7 +74,6 @@ export const Footer: React.FC = () => {
             </div>
           ))}
 
-          {/* Redes Sociais e E-mail */}
           <div className="footer-contato py-3 d-flex flex-wrap gap-3">
             <a
               href="https://www.instagram.com/saudeanimalagroevet/"
@@ -98,7 +97,6 @@ export const Footer: React.FC = () => {
 
         <hr className="border-secondary" />
 
-        {/* Direitos Reservados */}
         <div className="footer-redes py-3">
           <p className="text-secondary small mb-0 text-center">
             ©2026 Saúde Animal Agro e Vet - Todos os direitos reservados

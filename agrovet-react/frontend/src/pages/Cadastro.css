@@ -54,7 +54,6 @@
   border-color: transparent;
 }
 
-/* Campo de senha e botão de mostrar/ocultar */
 .senha-input-wrapper {
   position: relative;
   width: 100%;
@@ -76,7 +75,6 @@
   border-color: transparent;
 }
 
-/* Botão principal Cadastrar */
 .cadastro-card form > button[type="submit"] {
   width: 100%;
   padding: 13px;
@@ -94,7 +92,6 @@
   background-color: #194527;
 }
 
-/* Botão pequeno do olho */
 .btn-mostrar-senha {
   position: absolute;
   right: 10px;
@@ -123,7 +120,6 @@
   color: #194527;
 }
 
-/* Link para entrar */
 .login-link {
   margin-top: 20px;
   text-align: center;
@@ -139,7 +135,6 @@
   text-decoration: underline;
 }
 
-/* Mensagens de validação */
 .mensagem-cadastro {
   color: #b02a37;
   font-size: 14px;
@@ -147,7 +142,6 @@
   margin: 12px 0;
 }
 
-/* Ajuste para telas menores */
 @media (max-width: 500px) {
   .cadastro-card {
     padding: 24px 20px;

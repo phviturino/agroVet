@@ -22,7 +22,6 @@ export default function Produtos() {
   useEffect(() => {
     setLoading(true);
 
-    // Ajuste aqui para a porta onde o seu backend Node.js está rodando (ex: 3001)
     const baseUrl = 'http://localhost:3001/api/produtos';
     const url = termoBusca
       ? `${baseUrl}?busca=${encodeURIComponent(termoBusca)}`
@@ -65,7 +64,7 @@ export default function Produtos() {
 
   return (
     <main className="container mt-5 mb-5">
-      {/* Navegação de Categorias */}
+
       <div
         className="d-flex flex-wrap justify-content-center gap-2 mb-3"
         id="categorias-nav-links"
@@ -85,14 +84,12 @@ export default function Produtos() {
         ))}
       </div>
 
-      {/* Título do Catálogo */}
       <h2 className="text-center mb-4 text-dark catalogo-titulo">
         {termoBusca
           ? `Resultados para: "${termoBusca}"`
           : 'Todos os nossos produtos'}
       </h2>
 
-      {/* Botão de Ordenação A-Z / Z-A */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <button
           id="btn-ordenar"
@@ -107,7 +104,6 @@ export default function Produtos() {
         </span>
       </div>
 
-      {/* Grid de Produtos */}
       {loading ? (
         <div className="text-center my-5">
           <div className="spinner-border text-success" role="status">

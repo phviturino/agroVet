@@ -1,9 +1,8 @@
 import { Router, Request, Response } from 'express';
-import { db } from '../db'; // Ajusta o caminho conforme o teu ficheiro de conexão
+import { db } from '../db';
 
 const router = Router();
 
-// Rota que busca os produtos diretamente do MySQL
 router.get('/', async (req: Request, res: Response) => {
   try {
     const termoBusca = req.query.busca as string | undefined;
@@ -16,7 +15,7 @@ router.get('/', async (req: Request, res: Response) => {
     }
 
     const [rows] = await db.query(query, params);
-    res.json(rows); // Retorna os produtos do MySQL em JSON
+    res.json(rows);
   } catch (error) {
     console.error('Erro no MySQL:', error);
     res.status(500).json({ error: 'Erro ao buscar produtos' });

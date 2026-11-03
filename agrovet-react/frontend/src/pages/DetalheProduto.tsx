@@ -10,7 +10,7 @@ interface Produto {
 }
 
 export default function DetalheProduto() {
-  // Pega o ID diretamente da URL (ex: /produtos/135 -> pega 135)
+
   const path = window.location.pathname;
   const id = path.split('/').filter(Boolean).pop();
 

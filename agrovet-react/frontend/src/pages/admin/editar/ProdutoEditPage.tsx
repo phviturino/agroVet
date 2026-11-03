@@ -37,7 +37,6 @@ export function ProdutoEditPage({ produtoId, onSuccess }: Props) {
     setLoading(true);
 
     try {
-      // Ajusta o preço e envia o PUT para o backend
       const dadosParaEnviar = {
         ...form,
         preço: Number(String(form.preço).replace(',', '.')),

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-// Interface do Produto tipada conforme o retorno da Procedure/Banco
 interface Produto {
   id: number;
   nome: string;
@@ -12,7 +11,6 @@ export default function Inicio() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Busca os produtos em destaque da API Node.js assim que a tela carrega
   useEffect(() => {
     fetch('http://localhost:3001/api/produtos/destaque')
       .then((res) => {
@@ -33,7 +31,7 @@ export default function Inicio() {
 
   return (
     <main>
-      {/* Banner de Boas-Vindas */}
+
       <div className="container mt-5">
         <h1 className='text-dark'>Bem-vindo à Saúde Animal Agro e Vet</h1>
         <p>
@@ -54,7 +52,6 @@ export default function Inicio() {
         </div>
       </div>
 
-      {/* Seção Mais Vendidos */}
       <div className="container my-5">
         <div className="d-flex align-items-center justify-content-center mb-4 border-bottom pb-3">
           <h2 className="fw-bold m-0 fs-3 text-dark text-uppercase destaque-vendas">
@@ -62,7 +59,6 @@ export default function Inicio() {
           </h2>
         </div>
 
-        {/* Feedback visual enquanto carrega a API */}
         {loading ? (
           <div className="text-center my-5">
             <div className="spinner-border text-success" role="status">
@@ -118,7 +114,6 @@ export default function Inicio() {
         </div>
       </div>
 
-      {/* Seção Nossa História */}
       <div className="container my-5">
         <div className="row align-items-center">
           <div className="col-md-6">

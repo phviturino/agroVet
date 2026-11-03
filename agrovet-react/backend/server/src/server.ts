@@ -7,11 +7,9 @@ import mysql from 'mysql2/promise';
 const app = express();
 const PORT = 3001;
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Conexão com o banco de dados MySQL do XAMPP
 const db = mysql.createPool({
   host: 'localhost',
   user: 'root',
@@ -22,11 +20,6 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 
-/* ==========================================================================
-   1. ROTAS DE PRODUTOS
-   ========================================================================== */
-
-// ROTA DE DESTAQUES (Precisa vir ANTES de /api/produtos/:id)
 app.get('/api/produtos/destaque', async (req, res) => {
   try {
     const [rows]: any = await db.query('CALL sp_produtos_destaque()');
@@ -38,7 +31,6 @@ app.get('/api/produtos/destaque', async (req, res) => {
   }
 });
 
-// LISTAR TODOS OS PRODUTOS
 app.get('/api/produtos', async (req, res) => {
   try {
     const { busca } = req.query;
@@ -68,7 +60,6 @@ app.get('/api/produtos', async (req, res) => {
   }
 });
 
-// BUSCAR PRODUTO ESPECÍFICO POR ID
 app.get('/api/produtos/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -97,7 +88,6 @@ app.get('/api/produtos/:id', async (req, res) => {
   }
 });
 
-// CADASTRAR PRODUTO (POST)
 app.post('/api/produtos', async (req, res) => {
   try {
     const { nome, preço, imagem, descricao } = req.body;
@@ -112,7 +102,6 @@ app.post('/api/produtos', async (req, res) => {
   }
 });
 
-// ATUALIZAR/SALVAR PRODUTO (PUT)
 app.put('/api/produtos/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -134,7 +123,6 @@ app.put('/api/produtos/:id', async (req, res) => {
   }
 });
 
-// EXCLUIR PRODUTO (DELETE)
 app.delete('/api/produtos/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -145,10 +133,6 @@ app.delete('/api/produtos/:id', async (req, res) => {
     res.status(500).json({ erro: 'Erro ao excluir produto.' });
   }
 });
-
-/* ==========================================================================
-   2. ROTAS DE CATEGORIAS (Com tratamento da coluna `descrição` do MySQL)
-   ========================================================================== */
 
 app.get('/api/categorias', async (req, res) => {
   try {
@@ -181,7 +165,6 @@ app.post('/api/categorias', async (req, res) => {
       return res.status(400).json({ erro: 'O nome da categoria é obrigatório.' });
     }
 
-    // Insere no banco passando a chave 'descricao' do React para a coluna `descrição`
     const [result]: any = await db.query(
       'INSERT INTO categoria (nome, `descrição`) VALUES (?, ?)',
       [nome, descricao || '']
@@ -218,10 +201,6 @@ app.delete('/api/categorias/:id', async (req, res) => {
     res.status(500).json({ erro: 'Erro ao excluir categoria.' });
   }
 });
-
-/* ==========================================================================
-   3. ROTAS DE FORNECEDORES
-   ========================================================================== */
 
 app.get('/api/fornecedores', async (req, res) => {
   try {
@@ -282,15 +261,9 @@ app.delete('/api/fornecedores/:id', async (req, res) => {
   }
 });
 
-/* ==========================================================================
-   4. ROTAS DE USUÁRIOS
-   ========================================================================== */
-
-// CADASTRAR USUÁRIO
 app.post('/api/usuarios', async (req, res) => {
   const { nome, email, senha, cpf, telefone } = req.body ?? {};
 
-  // Verificação dos campos obrigatórios
   if (
     typeof nome !== 'string' || !nome.trim() ||
     typeof email !== 'string' || !email.trim() ||
@@ -303,7 +276,6 @@ app.post('/api/usuarios', async (req, res) => {
     });
   }
 
-  // Validação do nível da senha
   const senhaValida =
     senha.length >= 8 &&
     /[A-Z]/.test(senha) &&
@@ -318,13 +290,10 @@ app.post('/api/usuarios', async (req, res) => {
   }
 
   try {
-    // Criação do objeto e execução das validações
     const usuario = new Usuario(nome, email, cpf, telefone);
 
-    // Criptografia da senha
     const senhaHash = await bcrypt.hash(senha, 12);
 
-    // Inserção no banco
     await db.execute(
       `INSERT INTO usuario (nome, email, cpf, telefone, senha)
        VALUES (?, ?, ?, ?, ?)`,

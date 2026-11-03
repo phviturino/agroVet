@@ -38,59 +38,58 @@ function Cadastro() {
             .replace(/(\d{5})(\d)/, "$1-$2");
     }
 
-    
-async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
 
-    if (senha !== confirmarSenha) {
-        setMensagem("As senhas não são iguais. Verifique e tente novamente.");
-        return;
-    }
+    async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
+        event.preventDefault();
 
-    setMensagem("Cadastrando...");
-
-    const formulario = new FormData(event.currentTarget);
-
-    const dados = {
-        nome: String(formulario.get("nome") ?? "").trim(),
-        email: String(formulario.get("email") ?? "").trim(),
-        cpf: cpf.replace(/\D/g, ""),
-        telefone: telefone.replace(/\D/g, ""),
-        senha,
-    };
-
-    try {
-        const resposta = await fetch("http://localhost:3001/api/usuarios", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(dados),
-        });
-
-        const resultado = await resposta.json();
-
-        if (!resposta.ok) {
-            throw new Error(
-                resultado.mensagem || "Não foi possível realizar o cadastro."
-            );
+        if (senha !== confirmarSenha) {
+            setMensagem("As senhas não são iguais. Verifique e tente novamente.");
+            return;
         }
 
-        setMensagem("Cadastro realizado com sucesso!");
+        setMensagem("Cadastrando...");
 
-        // Aguarda um instante para exibir a mensagem
-        setTimeout(() => {
-            navigate("/login");
-        }, 1000);
+        const formulario = new FormData(event.currentTarget);
 
-    } catch (erro) {
-        if (erro instanceof Error) {
-            setMensagem(erro.message);
-        } else {
-            setMensagem("Erro ao conectar com o servidor.");
+        const dados = {
+            nome: String(formulario.get("nome") ?? "").trim(),
+            email: String(formulario.get("email") ?? "").trim(),
+            cpf: cpf.replace(/\D/g, ""),
+            telefone: telefone.replace(/\D/g, ""),
+            senha,
+        };
+
+        try {
+            const resposta = await fetch("http://localhost:3001/api/usuarios", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dados),
+            });
+
+            const resultado = await resposta.json();
+
+            if (!resposta.ok) {
+                throw new Error(
+                    resultado.mensagem || "Não foi possível realizar o cadastro."
+                );
+            }
+
+            setMensagem("Cadastro realizado com sucesso!");
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 1000);
+
+        } catch (erro) {
+            if (erro instanceof Error) {
+                setMensagem(erro.message);
+            } else {
+                setMensagem("Erro ao conectar com o servidor.");
+            }
         }
     }
-}
 
 
     return (
