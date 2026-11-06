@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./Header.css";
-
 interface HeaderProps {
   mostrarCatalogo?: boolean;
 }
@@ -113,7 +112,6 @@ export default function Header({ mostrarCatalogo = false }: HeaderProps) {
         </div>
       </nav>
 
-      {/* Botão do catálogo exibido somente quando solicitado */}
       {mostrarCatalogo && (
         <div className="menu-nav text-center mb-3">
           <div className="mb-3">
