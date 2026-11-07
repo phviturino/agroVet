@@ -3,9 +3,18 @@ import { Usuario } from './models/Usuario';
 import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql2/promise';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
+import { authMiddleware } from './middlewares/authMiddleware';
+
 
 const app = express();
 const PORT = 3001;
+const JWT_SECRET = process.env.JWT_SECRET; /*Ler a chave secreta do .env*/
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET não configurada no arquivo .env');
+}
 
 app.use(cors());
 app.use(express.json());
@@ -336,6 +345,61 @@ app.post('/api/usuarios', async (req, res) => {
       mensagem: 'Erro interno ao cadastrar usuário!'
     });
   }
+});
+
+app.post('/api/login', async (req, res) => {
+  const { email, senha } = req.body ?? {};
+
+  if (typeof email !== 'string' || !email.trim() ||
+      typeof senha !== 'string' || !senha) {
+    return res.status(400).json({
+      mensagem: 'E-mail e senha são obrigatórios!'
+    });
+  }
+
+  try {
+    const [rows]: any = await db.execute(
+      'SELECT id, nome, email, senha FROM usuario WHERE email = ?',
+      [email.trim()]
+    );
+
+    const usuario = rows[0];
+
+    if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {
+      return res.status(401).json({
+        mensagem: 'E-mail ou senha incorretos!'
+      });
+    }
+
+    const token = jwt.sign(
+      { id: usuario.id },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    return res.status(200).json({
+      mensagem: 'Login realizado com sucesso!',
+      token,
+      usuario: {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email
+      }
+    });
+
+  } catch (erro) {
+    console.error('Erro ao realizar login:', erro);
+
+    return res.status(500).json({
+      mensagem: 'Erro interno ao realizar login!'
+    });
+  }
+});
+
+app.get('/api/perfil', authMiddleware, (req, res) => {
+  res.status(200).json({
+    mensagem: 'Acesso autorizado! Token JWT válido.'
+  });
 });
 
 // Inicialização do servidor
