@@ -1,0 +1,154 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* MENU */
+
+.menu-nav {
+    height: 70px;
+    background-color: #fff;
+    padding: 12px 0;
+}
+
+.menu-nav:hover {
+    background-color: #f8f9fa;
+}
+
+.menu-nav ul li a {
+    text-decoration: none;
+    color: #1a1a1a;
+    padding: 0 20px;
+    font-weight: 600;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+/* TEXTOS */
+
+h1,
+p {
+    text-align: center;
+    font-size: 26px;
+}
+
+/* PRODUTOS */
+
+.card {
+    height: 100%;
+}
+
+.container-foto-produto {
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.foto-produto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .foto-produto {
+    transform: scale(1.05);
+}
+
+.nome-produto {
+    min-height: 38px;
+}
+
+/* FOOTER */
+
+footer p {
+    text-align: left;
+}
+
+.img-footer {
+    max-width: 650px;
+    display: block;
+    margin: 30px auto 0;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 768px) {
+    .logo-img-mobile {
+        width: 150px;
+    }
+
+    .btn-banner-home {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+
+    .menu-nav {
+        height: auto;
+        padding: 10px 0;
+    }
+
+    h1,
+    p {
+        font-size: 20px;
+    }
+
+    .container-foto-produto {
+        height: 220px;
+    }
+
+    footer .d-flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .footer-loja {
+        text-align: center;
+    }
+
+    .footer-loja p {
+        text-align: center !important;
+    }
+
+    .footer-loja a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        justify-content: center;
+    }
+
+    .footer-loja h6 {
+        margin-top: 50px;
+        margin-bottom: 1px;
+    }
+
+    .logo-footer {
+        max-width: 180px;
+        display: block;
+        margin: 0 auto 5px;
+    }
+
+    .img-footer {
+        max-width: 100%;
+        margin-top: 20px;
+    }
+
+    .footer-contato {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .footer-contato a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

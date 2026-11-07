@@ -1,0 +1,148 @@
+
+/* ==============================
+   IDENTIDADE VISUAL - AGROVET
+============================== */
+
+:root {
+  --agro-green: #245c38;
+  --agro-green-dark: #173f27;
+  --agro-green-light: #e8f2e9;
+
+  --agro-accent: #83b840;
+
+  --color-text: #252b26;
+  --color-text-muted: #68736b;
+
+  --color-background: #f6f8f5;
+  --color-surface: #ffffff;
+  --color-border: #e1e8e1;
+
+  --shadow-sm: 0 2px 8px rgba(24, 55, 32, 0.06);
+  --shadow-md: 0 8px 24px rgba(24, 55, 32, 0.10);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --font-main: "Segoe UI", Roboto, Arial, sans-serif;
+
+  font-family: var(--font-main);
+  color: var(--color-text);
+  background-color: var(--color-background);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==============================
+   RESET E CONFIGURAÇÕES GERAIS
+============================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  font-family: var(--font-main);
+  font-size: 16px;
+  line-height: 1.6;
+
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==============================
+   TEXTOS
+============================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-text);
+  font-family: var(--font-main);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+p {
+  color: var(--color-text-muted);
+}
+
+/* ==============================
+   LINKS
+============================== */
+
+a {
+  color: var(--agro-green);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--agro-green-dark);
+}
+
+/* ==============================
+   IMAGENS
+============================== */
+
+img {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* ==============================
+   ACESSIBILIDADE
+============================== */
+
+:focus-visible {
+  outline: 3px solid var(--agro-accent);
+  outline-offset: 3px;
+}
+
+/* ==============================
+   RESPONSIVIDADE
+============================== */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+}

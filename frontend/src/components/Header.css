@@ -1,0 +1,24 @@
+.navbar-dark {
+    background-color: #000000;
+    padding: 16px 0;
+}
+
+.logo-img {
+    width: 50%;
+    height: 80px;
+}
+
+.logo-img-mobile {
+    width: 60px;
+    height: auto;
+}
+
+.busca {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .logo-img-mobile {
+        width: 150px;
+    }
+}
