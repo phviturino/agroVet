@@ -1,5 +1,7 @@
+
 import { useState, type SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { validarCPF } from "../utils/validarCPF";
 import "./Cadastro.css";
 
 function Cadastro() {
@@ -38,9 +40,28 @@ function Cadastro() {
             .replace(/(\d{5})(\d)/, "$1-$2");
     }
 
+    function validarEmail(email: string): boolean {
+        const regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+        return regex.test(email);
+    }
 
     async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
         event.preventDefault();
+
+        const formulario = new FormData(event.currentTarget);
+
+        const nome = String(formulario.get("nome") ?? "").trim();
+        const email = String(formulario.get("email") ?? "").trim();
+
+        if (!validarCPF(cpf)) {
+            setMensagem("CPF inválido. Verifique os números informados.");
+            return;
+        }
+
+        if (!validarEmail(email)) {
+            setMensagem("E-mail inválido. Informe um endereço de e-mail válido.");
+            return;
+        }
 
         if (senha !== confirmarSenha) {
             setMensagem("As senhas não são iguais. Verifique e tente novamente.");
@@ -49,11 +70,9 @@ function Cadastro() {
 
         setMensagem("Cadastrando...");
 
-        const formulario = new FormData(event.currentTarget);
-
         const dados = {
-            nome: String(formulario.get("nome") ?? "").trim(),
-            email: String(formulario.get("email") ?? "").trim(),
+            nome,
+            email,
             cpf: cpf.replace(/\D/g, ""),
             telefone: telefone.replace(/\D/g, ""),
             senha,
@@ -90,7 +109,6 @@ function Cadastro() {
             }
         }
     }
-
 
     return (
         <main className="cadastro-container">
@@ -132,6 +150,7 @@ function Cadastro() {
                             onChange={(event) =>
                                 setCpf(formatarCPF(event.target.value))
                             }
+                            maxLength={14}
                             required
                         />
                     </div>
@@ -147,6 +166,7 @@ function Cadastro() {
                             onChange={(event) =>
                                 setTelefone(formatarTelefone(event.target.value))
                             }
+                            maxLength={15}
                             required
                         />
                     </div>
@@ -174,8 +194,9 @@ function Cadastro() {
                                 }
                             >
                                 <i
-                                    className={`bi ${mostrarSenha ? "bi-eye-slash" : "bi-eye"
-                                        }`}
+                                    className={`bi ${
+                                        mostrarSenha ? "bi-eye-slash" : "bi-eye"
+                                    }`}
                                 ></i>
                             </button>
                         </div>
@@ -191,7 +212,9 @@ function Cadastro() {
                                 name="confirmarSenha"
                                 placeholder="Digite a senha novamente"
                                 value={confirmarSenha}
-                                onChange={(event) => setConfirmarSenha(event.target.value)}
+                                onChange={(event) =>
+                                    setConfirmarSenha(event.target.value)
+                                }
                                 required
                             />
 
@@ -207,7 +230,13 @@ function Cadastro() {
                                         : "Mostrar confirmação de senha"
                                 }
                             >
-                                <i className={`bi ${mostrarConfirmarSenha ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                <i
+                                    className={`bi ${
+                                        mostrarConfirmarSenha
+                                            ? "bi-eye-slash"
+                                            : "bi-eye"
+                                    }`}
+                                ></i>
                             </button>
                         </div>
                     </div>
