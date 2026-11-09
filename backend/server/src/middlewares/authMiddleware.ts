@@ -26,8 +26,21 @@ export function authMiddleware(
   }
 
   try {
-    jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    
+    if (
+      typeof decoded === 'string' ||
+      typeof decoded.id !== 'number'
+    ) {
+      res.status(401).json({
+        mensagem: 'Token sem identificação válida!'
+      });
+      return;
+    }
+
+    res.locals.usuarioId = decoded.id;
     next();
+
   } catch {
     res.status(401).json({
       mensagem: 'Token inválido ou expirado!'
