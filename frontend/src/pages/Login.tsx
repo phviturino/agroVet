@@ -1,4 +1,6 @@
+
 import { useState, type SyntheticEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 function Login() {
@@ -6,13 +8,16 @@ function Login() {
     const [senha, setSenha] = useState("");
     const [mensagem, setMensagem] = useState("");
     const [mostrarSenha, setMostrarSenha] = useState(false);
+    const [carregando, setCarregando] = useState(false);
+
+    const navigate = useNavigate();
 
     function validarEmail(email: string): boolean {
         const regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
         return regex.test(email);
     }
 
-    function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
+    async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
         event.preventDefault();
 
         if (!validarEmail(email.trim())) {
@@ -26,6 +31,41 @@ function Login() {
         }
 
         setMensagem("Verificando credenciais...");
+        setCarregando(true);
+
+        try {
+            const resposta = await fetch("http://localhost:3001/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email.trim(),
+                    senha,
+                }),
+            });
+
+            const dados = await resposta.json();
+
+            if (!resposta.ok) {
+                setMensagem(dados.mensagem || "E-mail ou senha incorretos.");
+                return;
+            }
+
+            if (!dados.token) {
+                setMensagem("Não foi possível concluir a autenticação.");
+                return;
+            }
+
+            sessionStorage.setItem("token", dados.token);
+            setMensagem("Login realizado com sucesso!");
+            navigate("/");
+
+        } catch {
+            setMensagem("Não foi possível conectar ao servidor. Tente novamente.");
+        } finally {
+            setCarregando(false);
+        }
     }
 
     return (
@@ -47,7 +87,6 @@ function Login() {
                             required
                         />
                     </div>
-
 
                     <div className="campo">
                         <label htmlFor="senha">Senha</label>
@@ -76,20 +115,22 @@ function Login() {
                         </div>
                     </div>
 
-                {mensagem && (
-                    <p className="mensagem-login" role="status">
-                        {mensagem}
-                    </p>
-                )}
+                    {mensagem && (
+                        <p className="mensagem-login" role="status">
+                            {mensagem}
+                        </p>
+                    )}
 
-                <button type="submit">Entrar</button>
-            </form>
+                    <button type="submit" disabled={carregando}>
+                        {carregando ? "Entrando..." : "Entrar"}
+                    </button>
+                </form>
 
-            <p className="cadastro-link">
-                Ainda não tem uma conta? <a href="/cadastro">Cadastre-se</a>
-            </p>
-        </section>
-        </main >
+                <p className="cadastro-link">
+                    Ainda não tem uma conta? <a href="/cadastro">Cadastre-se</a>
+                </p>
+            </section>
+        </main>
     );
 }
 
