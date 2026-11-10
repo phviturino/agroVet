@@ -7,6 +7,7 @@ import Contato from './pages/Contato';
 import AdminIndex from './pages/admin/AdminIndex';
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import Cadastro from './pages/Cadastro';
+import Login from "./pages/Login";
 
 export default function App() {
 
@@ -30,8 +31,11 @@ export default function App() {
       return <Contato />;
     }
 
-     if (path == '/cadastro') {
+    if (path == '/cadastro') {
       return <Cadastro />;
+    }
+    if (path === "/login") {
+      return <Login />;
     }
 
     return <Inicio />;
