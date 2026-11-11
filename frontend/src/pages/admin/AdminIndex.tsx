@@ -14,14 +14,17 @@ import {
 import { ProdutoCreatePage } from "./cadastrar/ProdutoCreatePage";
 import { CategoriaCreatePage } from "./cadastrar/CategoriaCreatePage";
 import { FornecedorCreatePage } from "./cadastrar/FornecedorCreatePage";
+import { AvaliacaoCreatePage } from "./cadastrar/AvaliacaoCreatePage";
 
 import { ProdutoListPage } from "./ListarDelet/ProdutoListPage";
 import { CategoriaListPage } from "./ListarDelet/CategoriaListPage";
 import { FornecedorListPage } from "./ListarDelet/FornecedorListPage";
+import { AvaliacaoListPage } from "./ListarDelet/AvaliacaoListPage";
 
 import { ProdutoEditPage } from "./editar/ProdutoEditPage";
 import { CategoriaEditPage } from "./editar/CategoriaEditPage";
 import { FornecedorEditPage } from "./editar/FornecedorEditPage";
+import { AvaliacaoEditPage } from "./editar/AvaliacaoEditPage";
 
 type Produto = {
   id: number;
@@ -146,7 +149,6 @@ export default function AdminIndex() {
 
       {opcao === 'menu' && (
         <>
-
           <div className="row g-4">
             <div className="col-md-4">
               <div className="card h-100 shadow-sm border-0 bg-dark text-white p-4">
@@ -207,9 +209,28 @@ export default function AdminIndex() {
                 </div>
               </div>
             </div>
+
+            <div className="col-md-4">
+              <div className="card h-100 shadow-sm border-0 bg-dark text-white p-4">
+                <h3 className="text-primary mb-3">⭐ Avaliações</h3>
+                <div className="d-grid gap-2 mt-auto">
+                  <button
+                    className="btn btn-primary fw-bold"
+                    onClick={() => setOpcao('cadastrar-avaliacao')}
+                  >
+                    + Nova Avaliação
+                  </button>
+                  <button
+                    className="btn btn-outline-light"
+                    onClick={() => setOpcao('listar-avaliacao')}
+                  >
+                    📋 Gerenciar / Excluir
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* INDICADORES */}
           <section className="mt-5">
             <h3 className="fw-bold mb-2">
               📊 Indicadores do AgroVet
@@ -228,7 +249,6 @@ export default function AdminIndex() {
               </div>
             ) : (
               <div className="row g-4">
-
                 <div className="col-lg-6">
                   <div className="card shadow-sm border-0 p-4 h-100">
                     <h5 className="fw-bold mb-2">
@@ -333,7 +353,6 @@ export default function AdminIndex() {
                     </div>
                   </div>
                 </div>
-
               </div>
             )}
           </section>
@@ -343,6 +362,7 @@ export default function AdminIndex() {
       {opcao === 'cadastrar-produto' && <ProdutoCreatePage />}
       {opcao === 'cadastrar-categoria' && <CategoriaCreatePage />}
       {opcao === 'cadastrar-fornecedor' && <FornecedorCreatePage />}
+      {opcao === 'cadastrar-avaliacao' && <AvaliacaoCreatePage />}
 
       {opcao === 'listar-produto' && (
         <ProdutoListPage
@@ -359,6 +379,12 @@ export default function AdminIndex() {
       {opcao === 'listar-fornecedor' && (
         <FornecedorListPage
           onEdit={(id) => handleEdit('editar-fornecedor', id)}
+        />
+      )}
+
+      {opcao === 'listar-avaliacao' && (
+        <AvaliacaoListPage
+          onEdit={(id) => handleEdit('editar-avaliacao', id)}
         />
       )}
 
@@ -380,6 +406,13 @@ export default function AdminIndex() {
         <FornecedorEditPage
           fornecedorId={editId}
           onSuccess={() => setOpcao('listar-fornecedor')}
+        />
+      )}
+
+      {opcao === 'editar-avaliacao' && editId !== null && (
+        <AvaliacaoEditPage
+          avaliacaoId={editId}
+          onSuccess={() => setOpcao('listar-avaliacao')}
         />
       )}
     </main>
