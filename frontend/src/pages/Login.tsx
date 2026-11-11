@@ -57,7 +57,7 @@ function Login() {
                 return;
             }
 
-            sessionStorage.setItem("token", dados.token);
+            localStorage.setItem("token", dados.token);
             setMensagem("Login realizado com sucesso!");
             navigate("/");
 
