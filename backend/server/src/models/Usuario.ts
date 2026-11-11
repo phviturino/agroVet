@@ -68,10 +68,13 @@ export class Usuario {
     }
 
     set telefone(novoTelefone: string) {
+        if (typeof novoTelefone !== "string") {
+            throw new Error("Telefone inválido!");
+        }
+
         const telefoneLimpo = novoTelefone.replace(/\D/g, "");
 
         if (
-            typeof novoTelefone !== "string" ||
             telefoneLimpo.length < 10 ||
             telefoneLimpo.length > 11
         ) {

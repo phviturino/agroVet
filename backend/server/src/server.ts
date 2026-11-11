@@ -785,11 +785,152 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-app.get('/api/perfil', authMiddleware, (req, res) => {
-  res.status(200).json({
-    mensagem: 'Acesso autorizado! Token JWT válido.'
-  });
+
+app.get('/api/perfil', authMiddleware, async (req, res) => {
+  try {
+    const usuarioId = res.locals.usuarioId;
+
+    const [rows]: any = await db.execute(
+      `SELECT id, nome, email, cpf, telefone
+       FROM usuario
+       WHERE id = ?`,
+      [usuarioId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        mensagem: 'Usuário não encontrado!'
+      });
+    }
+
+    return res.status(200).json({
+      mensagem: 'Perfil consultado com sucesso!',
+      usuario: rows[0]
+    });
+
+  } catch (erro) {
+    console.error('Erro ao consultar perfil:', erro);
+
+    return res.status(500).json({
+      mensagem: 'Erro interno ao consultar perfil!'
+    });
+  }
 });
+
+
+app.put('/api/perfil', authMiddleware, async (req, res) => {
+  try {
+    const usuarioId = res.locals.usuarioId;
+    const { nome, cpf, telefone, senha, confirmarSenha, email } = req.body ?? {};
+
+    if (email !== undefined) {
+      return res.status(400).json({
+        mensagem: 'O e-mail não pode ser alterado!'
+      });
+    }
+
+    const [rows]: any = await db.execute(
+      'SELECT id, nome, email, cpf, telefone FROM usuario WHERE id = ?',
+      [usuarioId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        mensagem: 'Usuário não encontrado!'
+      });
+    }
+
+    const atual = rows[0];
+
+    const usuario = new Usuario(
+      nome ?? atual.nome,
+      atual.email,
+      cpf ?? atual.cpf,
+      telefone ?? atual.telefone
+    );
+
+    let senhaHash: string | null = null;
+
+    if (senha !== undefined) {
+      if (typeof senha !== 'string' || !(
+        senha.length >= 8 &&
+        /[A-Z]/.test(senha) &&
+        /[a-z]/.test(senha) &&
+        /[0-9]/.test(senha) &&
+        /[^A-Za-z0-9]/.test(senha)
+      )) {
+        return res.status(400).json({
+          mensagem: 'A senha deve ter pelo menos 8 caracteres, letra maiúscula, minúscula, número e caractere especial.'
+        });
+      }
+
+      if (senha !== confirmarSenha) {
+        return res.status(400).json({
+          mensagem: 'As senhas não coincidem!'
+        });
+      }
+
+      senhaHash = await bcrypt.hash(senha, 12);
+    }
+
+    const [duplicados]: any = await db.execute(
+      'SELECT id FROM usuario WHERE cpf = ? AND id <> ?',
+      [usuario.cpf, usuarioId]
+    );
+
+    if (duplicados.length > 0) {
+      return res.status(409).json({
+        mensagem: 'CPF já cadastrado por outro usuário!'
+      });
+    }
+
+    if (senhaHash !== null) {
+      await db.execute(
+        'UPDATE usuario SET nome = ?, cpf = ?, telefone = ?, senha = ? WHERE id = ?',
+        [usuario.nome, usuario.cpf, usuario.telefone, senhaHash, usuarioId]
+      );
+    } else {
+      await db.execute(
+        'UPDATE usuario SET nome = ?, cpf = ?, telefone = ? WHERE id = ?',
+        [usuario.nome, usuario.cpf, usuario.telefone, usuarioId]
+      );
+    }
+
+    return res.status(200).json({
+      mensagem: 'Perfil atualizado com sucesso!'
+    });
+
+  } catch (erro: unknown) {
+    if (
+      erro instanceof Error &&
+      [
+        'O nome não pode estar vazio!',
+        'CPF inválido!',
+        'Telefone inválido!',
+        'Formato de e-mail inválido!'
+      ].includes(erro.message)
+    ) {
+      return res.status(400).json({
+        mensagem: erro.message
+      });
+    }
+
+    const erroBanco = erro as { code?: string };
+
+    if (erroBanco.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        mensagem: 'CPF já cadastrado por outro usuário!'
+      });
+    }
+
+    console.error('Erro ao atualizar perfil:', erro);
+
+    return res.status(500).json({
+      mensagem: 'Erro interno ao atualizar perfil!'
+    });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor backend rodando em http://localhost:${PORT}`);
