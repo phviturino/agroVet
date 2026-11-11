@@ -8,6 +8,7 @@ import AdminIndex from './pages/admin/AdminIndex';
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import Cadastro from './pages/Cadastro';
 import Login from "./pages/Login";
+import Perfil from "./pages/Perfil";
 
 export default function App() {
 
@@ -36,6 +37,9 @@ export default function App() {
     }
     if (path === "/login") {
       return <Login />;
+    }
+    if (path === '/perfil') {
+      return <Perfil />;
     }
 
     return <Inicio />;
