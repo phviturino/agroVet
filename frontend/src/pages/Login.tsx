@@ -1,6 +1,5 @@
 
 import { useState, type SyntheticEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 function Login() {
@@ -10,7 +9,6 @@ function Login() {
     const [mostrarSenha, setMostrarSenha] = useState(false);
     const [carregando, setCarregando] = useState(false);
 
-    const navigate = useNavigate();
 
     function validarEmail(email: string): boolean {
         const regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
@@ -59,7 +57,7 @@ function Login() {
 
             sessionStorage.setItem("token", dados.token);
             setMensagem("Login realizado com sucesso!");
-            navigate("/");
+            window.location.assign("/");
 
         } catch {
             setMensagem("Não foi possível conectar ao servidor. Tente novamente.");

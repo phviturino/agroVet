@@ -1,6 +1,4 @@
-
 import { useState, type SyntheticEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import { validarCPF } from "../utils/validarCPF";
 import "./Cadastro.css";
 
@@ -15,7 +13,6 @@ function Cadastro() {
     const [cpf, setCpf] = useState("");
     const [telefone, setTelefone] = useState("");
 
-    const navigate = useNavigate();
 
     function formatarCPF(valor: string) {
         const numeros = valor.replace(/\D/g, "").slice(0, 11);
@@ -98,7 +95,7 @@ function Cadastro() {
             setMensagem("Cadastro realizado com sucesso!");
 
             setTimeout(() => {
-                navigate("/login");
+                window.location.assign("/login");
             }, 1000);
 
         } catch (erro) {
@@ -194,9 +191,8 @@ function Cadastro() {
                                 }
                             >
                                 <i
-                                    className={`bi ${
-                                        mostrarSenha ? "bi-eye-slash" : "bi-eye"
-                                    }`}
+                                    className={`bi ${mostrarSenha ? "bi-eye-slash" : "bi-eye"
+                                        }`}
                                 ></i>
                             </button>
                         </div>
@@ -231,11 +227,10 @@ function Cadastro() {
                                 }
                             >
                                 <i
-                                    className={`bi ${
-                                        mostrarConfirmarSenha
-                                            ? "bi-eye-slash"
-                                            : "bi-eye"
-                                    }`}
+                                    className={`bi ${mostrarConfirmarSenha
+                                        ? "bi-eye-slash"
+                                        : "bi-eye"
+                                        }`}
                                 ></i>
                             </button>
                         </div>
