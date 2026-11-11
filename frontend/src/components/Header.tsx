@@ -7,6 +7,8 @@ interface HeaderProps {
 export default function Header({ mostrarCatalogo = false }: HeaderProps) {
   const [busca, setBusca] = useState("");
 
+  const estaLogado = Boolean(localStorage.getItem("token"));
+
   function handleBusca(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -24,7 +26,7 @@ export default function Header({ mostrarCatalogo = false }: HeaderProps) {
     <header>
       <nav className="navbar-dark py-3">
         <div className="container-fluid px-3">
-          
+
           <div className="d-flex justify-content-center mb-3 d-md-none">
             <a className="logo" href="/">
               <img
@@ -72,14 +74,26 @@ export default function Header({ mostrarCatalogo = false }: HeaderProps) {
               </form>
             </div>
 
-            <div className="col-md-3">
-              <div className="d-flex align-items-center justify-content-end">
+
+            <div className="col-md-3 d-flex align-items-center justify-content-end">
+              {estaLogado ? (
+                <a
+                  href="/perfil"
+                  className="btn btn-outline-success rounded-circle d-flex align-items-center justify-content-center"
+                  style={{ width: "45px", height: "45px" }}
+                  title="Meu Perfil"
+                  aria-label="Meu Perfil"
+                >
+                  <i className="bi bi-person-fill fs-5"></i>
+                </a>
+              ) : (
                 <a href="/cadastro" className="btn btn-outline-success">
                   <i className="bi bi-person-circle me-2"></i>
                   Cadastro
                 </a>
-              </div>
+              )}
             </div>
+
 
           </div>
 

@@ -1,6 +1,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { validarCPF } from "../utils/validarCPF";
 
 export default function Perfil() {
   const { usuario, carregarPerfil, atualizarPerfil } = useAuth();
@@ -16,6 +17,13 @@ export default function Perfil() {
   const [telefone, setTelefone] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+
+  const senhaForte =
+    senha.length >= 8 &&
+    /[A-Z]/.test(senha) &&
+    /[a-z]/.test(senha) &&
+    /[0-9]/.test(senha) &&
+    /[^A-Za-z0-9]/.test(senha);
 
   useEffect(() => {
     async function buscarPerfil() {
@@ -33,14 +41,14 @@ export default function Perfil() {
     }
 
     buscarPerfil();
-  }, []);
+  }, [carregarPerfil]);
 
   function iniciarEdicao() {
     if (!usuario) return;
 
     setNome(usuario.nome);
     setCpf(usuario.cpf);
-    setTelefone(usuario.telefone);
+    setTelefone(usuario.telefone ?? "");
     setSenha("");
     setConfirmarSenha("");
     setErro("");
@@ -59,9 +67,43 @@ export default function Perfil() {
   async function salvarPerfil(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
 
-    setSalvando(true);
+    if (salvando) return;
+
     setErro("");
     setMensagem("");
+
+    if (!nome.trim()) {
+      setErro("Informe seu nome.");
+      return;
+    }
+
+    const cpfLimpo = cpf.replace(/\D/g, "");
+
+    if (!validarCPF(cpfLimpo)) {
+      setErro("CPF inválido. Verifique os números informados.");
+      return;
+    }
+
+    if (!telefone.trim()) {
+      setErro("Informe seu telefone.");
+      return;
+    }
+
+    if (senha || confirmarSenha) {
+      if (!senhaForte) {
+        setErro(
+          "A senha deve ter pelo menos 8 caracteres, letra maiúscula, minúscula, número e caractere especial."
+        );
+        return;
+      }
+
+      if (senha !== confirmarSenha) {
+        setErro("As senhas não coincidem.");
+        return;
+      }
+    }
+
+    setSalvando(true);
 
     try {
       const dadosAtualizados: {
@@ -71,12 +113,12 @@ export default function Perfil() {
         senha?: string;
         confirmarSenha?: string;
       } = {
-        nome,
-        cpf,
-        telefone
+        nome: nome.trim(),
+        cpf: cpfLimpo,
+        telefone: telefone.trim()
       };
 
-      if (senha || confirmarSenha) {
+      if (senha) {
         dadosAtualizados.senha = senha;
         dadosAtualizados.confirmarSenha = confirmarSenha;
       }
@@ -113,6 +155,9 @@ export default function Perfil() {
         <p className="text-danger">
           {erro || "Usuário não encontrado."}
         </p>
+        <a href="/login" className="btn btn-primary">
+          Fazer login
+        </a>
       </div>
     );
   }
@@ -123,21 +168,33 @@ export default function Perfil() {
       <p>Gerencie suas informações pessoais.</p>
 
       {mensagem && (
-        <div className="alert alert-success">{mensagem}</div>
+        <div className="alert alert-success" role="status">
+          {mensagem}
+        </div>
       )}
 
       {erro && (
-        <div className="alert alert-danger">{erro}</div>
+        <div className="alert alert-danger" role="alert">
+          {erro}
+        </div>
       )}
 
-      <div className="card mt-4">
+      <div className="card mt-4 shadow-sm">
         <div className="card-body">
           {!editando ? (
             <>
-              <p><strong>Nome:</strong> {usuario.nome}</p>
-              <p><strong>E-mail:</strong> {usuario.email}</p>
-              <p><strong>CPF:</strong> {usuario.cpf}</p>
-              <p><strong>Telefone:</strong> {usuario.telefone}</p>
+              <p>
+                <strong>Nome:</strong> {usuario.nome}
+              </p>
+              <p>
+                <strong>E-mail:</strong> {usuario.email}
+              </p>
+              <p>
+                <strong>CPF:</strong> {usuario.cpf}
+              </p>
+              <p>
+                <strong>Telefone:</strong> {usuario.telefone}
+              </p>
 
               <button
                 type="button"
@@ -189,6 +246,7 @@ export default function Perfil() {
                   className="form-control"
                   value={cpf}
                   onChange={(e) => setCpf(e.target.value)}
+                  maxLength={14}
                   required
                 />
               </div>
@@ -223,10 +281,34 @@ export default function Perfil() {
                   onChange={(e) => setSenha(e.target.value)}
                   autoComplete="new-password"
                 />
+
+                {senha && (
+                  <div className="mt-2">
+                    <small
+                      className={
+                        senhaForte
+                          ? "text-success fw-bold"
+                          : "text-danger fw-bold"
+                      }
+                    >
+                      {senhaForte ? "Senha forte" : "Senha fraca"}
+                    </small>
+
+                    {!senhaForte && (
+                      <div className="text-muted small">
+                        Mínimo de 8 caracteres, incluindo letra
+                        maiúscula, minúscula, número e símbolo.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="mb-3">
-                <label htmlFor="perfil-confirmar" className="form-label">
+                <label
+                  htmlFor="perfil-confirmar"
+                  className="form-label"
+                >
                   Confirmar nova senha
                 </label>
                 <input
@@ -237,6 +319,20 @@ export default function Perfil() {
                   onChange={(e) => setConfirmarSenha(e.target.value)}
                   autoComplete="new-password"
                 />
+
+                {confirmarSenha && (
+                  <small
+                    className={
+                      senha === confirmarSenha
+                        ? "text-success"
+                        : "text-danger"
+                    }
+                  >
+                    {senha === confirmarSenha
+                      ? "As senhas coincidem."
+                      : "As senhas não coincidem."}
+                  </small>
+                )}
               </div>
 
               <div className="d-flex gap-2">
@@ -245,7 +341,9 @@ export default function Perfil() {
                   className="btn btn-success"
                   disabled={salvando}
                 >
-                  {salvando ? "Salvando..." : "Salvar alterações"}
+                  {salvando
+                    ? "Salvando..."
+                    : "Salvar alterações"}
                 </button>
 
                 <button
