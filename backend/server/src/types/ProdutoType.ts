@@ -1,0 +1,1 @@
+export type PrecoProduto = number | null;
