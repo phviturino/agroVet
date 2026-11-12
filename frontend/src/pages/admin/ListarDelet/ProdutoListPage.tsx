@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
+import Paginacao from "../../../components/Paginacao";
 
 type Produto = {
   id: number;
@@ -139,29 +140,11 @@ export function ProdutoListPage({ onEdit }: Props) {
         </table>
       </div>
 
-      {totalPaginas > 1 && (
-        <div className="d-flex justify-content-center align-items-center gap-3 mt-3">
-          <button
-            className="btn btn-outline-primary"
-            disabled={paginaAtual === 1}
-            onClick={() => setPaginaAtual((p) => p - 1)}
-          >
-            Anterior
-          </button>
-
-          <span className="fw-semibold">
-            Página {paginaAtual} de {totalPaginas}
-          </span>
-
-          <button
-            className="btn btn-outline-primary"
-            disabled={paginaAtual === totalPaginas}
-            onClick={() => setPaginaAtual((p) => p + 1)}
-          >
-            Próxima
-          </button>
-        </div>
-      )}
+      <Paginacao
+        paginaAtual={paginaAtual}
+        totalPaginas={totalPaginas}
+        aoMudarPagina={setPaginaAtual}
+      />
 
       {produtos.length > 0 && (
         <p className="text-center text-muted small mt-3 mb-0">
