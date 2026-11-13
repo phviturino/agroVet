@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { apiURL } from "../api/constante";
 
 interface Produto {
   id: number;
@@ -26,7 +27,10 @@ export default function DetalheProduto() {
     }
 
     setLoading(true);
-    fetch(`http://localhost:3001/api/produtos/${id}`)
+    const url = `${apiURL}/produtos/${id}`;
+
+    fetch(url)
+
       .then((res) => {
         if (!res.ok) {
           throw new Error('Produto não encontrado');

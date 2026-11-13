@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-	host: '127.0.0.1' // Garante que o Nginx consiga conectar no Vite
-  }
+    host: '0.0.0.0',
+    watch: {
+      usePolling: true,
+    },
+  },
 });

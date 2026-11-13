@@ -11,7 +11,7 @@ services:
     #  - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql/saudeanimal_novo.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - rede-interna
 
@@ -43,6 +43,8 @@ services:
     #    - "3000:3000"
     networks:
       - rede-externa
+    volumes: 
+      - ./frontend:/app
 
   # Proxy Reverso Nginx
   nginx:

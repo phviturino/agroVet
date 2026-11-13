@@ -25,7 +25,7 @@ const db = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD ?? '',
-  database: process.env.DB_NAME || 'saudeanimal_novo',
+  database: process.env.DB_DATABASE || 'saudeanimal_novo',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -70,7 +70,7 @@ app.get('/api/produtos', async (req, res) => {
         p.id,
         p.id_categoria,
         p.nome,
-        p.preço AS preco,
+        p.preco AS preco,
         p.estoque,
         p.imagem,
         p.descricao,
@@ -164,7 +164,7 @@ app.get('/api/produtos/:id', async (req, res) => {
         p.id,
         p.id_categoria,
         p.nome,
-        p.preço AS preco,
+        p.preco AS preco,
         p.estoque,
         p.imagem,
         p.descricao,
@@ -240,7 +240,7 @@ app.post('/api/produtos', async (req, res) => {
     const [result]: any = await db.query(
       `
       INSERT INTO produto
-        (nome, preço, estoque, id_categoria, imagem, descricao)
+        (nome, preco, estoque, id_categoria, imagem, descricao)
       VALUES (?, ?, ?, ?, ?, ?)
       `,
       [
@@ -317,7 +317,7 @@ app.put('/api/produtos/:id', async (req, res) => {
       UPDATE produto
       SET
         nome = ?,
-        preço = ?,
+        preco = ?,
         estoque = ?,
         id_categoria = ?,
         imagem = ?,
@@ -387,7 +387,7 @@ app.delete('/api/produtos/:id', async (req, res) => {
 app.get('/api/categorias', async (req, res) => {
   try {
     const [rows] = await db.query(
-      'SELECT id, nome, `descrição` AS descricao FROM categoria'
+      'SELECT id, nome, `descricao` AS descricao FROM categoria'
     );
     res.json(rows);
   } catch (error) {
@@ -409,7 +409,7 @@ app.get('/api/categorias/:id', async (req, res) => {
     }
 
     const [rows]: any = await db.query(
-      'SELECT id, nome, `descrição` AS descricao FROM categoria WHERE id = ?',
+      'SELECT id, nome, `descricao` AS descricao FROM categoria WHERE id = ?',
       [id]
     );
 
@@ -439,7 +439,7 @@ app.post('/api/categorias', async (req, res) => {
     }
 
     const [result]: any = await db.query(
-      'INSERT INTO categoria (nome, `descrição`) VALUES (?, ?)',
+      'INSERT INTO categoria (nome, `descricao`) VALUES (?, ?)',
       [nome.trim(), descricao || '']
     );
 
@@ -473,7 +473,7 @@ app.put('/api/categorias/:id', async (req, res) => {
     }
 
     const [result]: any = await db.query(
-      'UPDATE categoria SET nome = ?, `descrição` = ? WHERE id = ?',
+      'UPDATE categoria SET nome = ?, `descricao` = ? WHERE id = ?',
       [nome.trim(), descricao || '', id]
     );
 

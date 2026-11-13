@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { apiURL } from '../api/constante';
 
 interface Produto {
   id: number;
   nome: string;
-  preço: number;
+  preco: number;
   imagem: string;
   categoria?: string;
 }
@@ -22,10 +23,9 @@ export default function Produtos() {
   useEffect(() => {
     setLoading(true);
 
-    const baseUrl = 'http://localhost:3001/api/produtos';
     const url = termoBusca
-      ? `${baseUrl}?busca=${encodeURIComponent(termoBusca)}`
-      : baseUrl;
+      ? `${apiURL}/produtos?busca=${encodeURIComponent(termoBusca)}`
+      : `${apiURL}/produtos`;
 
     fetch(url)
       .then((res) => {
@@ -72,11 +72,10 @@ export default function Produtos() {
         {categorias.map((cat, index) => (
           <button
             key={index}
-            className={`btn btn-sm ${
-              categoriaSelecionada === cat
-                ? 'btn-success fw-bold'
-                : 'btn-outline-secondary'
-            }`}
+            className={`btn btn-sm ${categoriaSelecionada === cat
+              ? 'btn-success fw-bold'
+              : 'btn-outline-secondary'
+              }`}
             onClick={() => setCategoriaSelecionada(cat)}
           >
             {cat}
@@ -134,7 +133,7 @@ export default function Produtos() {
 
                   <p className="card-text fw-bold fs-5 mt-auto mb-2 preço-produto text-warning">
                     R${' '}
-                    {Number(produto.preço).toLocaleString('pt-BR', {
+                    {Number(produto.preco).toLocaleString('pt-BR', {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
