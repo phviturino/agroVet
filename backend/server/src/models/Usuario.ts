@@ -1,13 +1,13 @@
 import { validarCPF } from "../utils/validarCPF";
 
-export class Usuario {
-    // ATRIBUTOS PRIVADOS
+export type TipoUsuario = "admin" | "cliente";
+
+export abstract class Usuario {
     #nome!: string;
     #email!: string;
     #cpf!: string;
     #telefone!: string;
 
-    // CONSTRUTOR
     constructor(
         nome: string,
         email: string,
@@ -20,7 +20,6 @@ export class Usuario {
         this.telefone = telefone;
     }
 
-    // GETTERS
     get nome(): string {
         return this.#nome;
     }
@@ -37,50 +36,44 @@ export class Usuario {
         return this.#telefone;
     }
 
-    // SETTERS
-    set nome(novoNome: string) {
-        if (typeof novoNome !== "string" || !novoNome.trim()) {
+    set nome(valor: string) {
+        if (typeof valor !== "string" || !valor.trim()) {
             throw new Error("O nome não pode estar vazio!");
         }
-
-        this.#nome = novoNome.trim();
+        this.#nome = valor.trim();
     }
 
-    set email(novoEmail: string) {
-        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    set email(valor: string) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (
-            typeof novoEmail !== "string" ||
-            !regexEmail.test(novoEmail.trim())
-        ) {
+        if (typeof valor !== "string" || !regex.test(valor.trim())) {
             throw new Error("Formato de e-mail inválido!");
         }
-
-        this.#email = novoEmail.trim();
+        this.#email = valor.trim();
     }
 
-    set cpf(novoCPF: string) {
-        if (typeof novoCPF !== "string" || !validarCPF(novoCPF)) {
+    set cpf(valor: string) {
+        if (typeof valor !== "string" || !validarCPF(valor)) {
             throw new Error("CPF inválido!");
         }
-
-        this.#cpf = novoCPF.replace(/\D/g, "");
+        this.#cpf = valor.replace(/\D/g, "");
     }
 
-    set telefone(novoTelefone: string) {
-        if (typeof novoTelefone !== "string") {
+    set telefone(valor: string) {
+        if (typeof valor !== "string") {
             throw new Error("Telefone inválido!");
         }
 
-        const telefoneLimpo = novoTelefone.replace(/\D/g, "");
+        const limpo = valor.replace(/\D/g, "");
 
-        if (
-            telefoneLimpo.length < 10 ||
-            telefoneLimpo.length > 11
-        ) {
+        if (limpo.length < 10 || limpo.length > 11) {
             throw new Error("Telefone inválido!");
         }
 
-        this.#telefone = telefoneLimpo;
+        this.#telefone = limpo;
     }
+
+    abstract get tipoUsuario(): TipoUsuario;
+
+    abstract podeGerenciarProdutos(): boolean;
 }

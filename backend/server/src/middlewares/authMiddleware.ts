@@ -27,7 +27,7 @@ export function authMiddleware(
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    
+
     if (
       typeof decoded === 'string' ||
       typeof decoded.id !== 'number'
@@ -39,6 +39,19 @@ export function authMiddleware(
     }
 
     res.locals.usuarioId = decoded.id;
+
+    if (
+      decoded.tipo_usuario !== "admin" &&
+      decoded.tipo_usuario !== "cliente"
+    ) {
+      res.status(401).json({
+        mensagem: "Token sem perfil de usuário válido!"
+      });
+      return;
+    }
+
+    res.locals.tipoUsuario = decoded.tipo_usuario;
+
     next();
 
   } catch {

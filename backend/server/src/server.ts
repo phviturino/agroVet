@@ -1,14 +1,16 @@
-
 import bcrypt from 'bcrypt';
 import { Usuario } from './models/Usuario';
+import { Administrador } from './models/Administrador';
+import { Cliente } from './models/Cliente';
 import express from 'express';
 import cors from 'cors';
-import mysql from 'mysql2/promise';
+import { db } from './db';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { authMiddleware } from './middlewares/authMiddleware';
 import avaliacaoRoutes from './routes/avaliacao';
-import { Produto } from './models/Produto';
+import { ProdutoService, type ProdutoRow } from './services/ProdutoService';
+import { adminMiddleware } from './middlewares/adminMiddleware';
 
 const app = express();
 const PORT = 3001;
@@ -21,19 +23,15 @@ if (!JWT_SECRET) {
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD ?? '',
-  database: process.env.DB_DATABASE || 'saudeanimal_novo',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
 
-function idValido(valor: string): boolean {
-  return /^\d+$/.test(valor) && Number(valor) > 0;
+function idValido(valor: string | string[]): boolean {
+  return (
+    typeof valor === 'string' &&
+    /^\d+$/.test(valor) &&
+    Number(valor) > 0
+  );
 }
+
 
 function precoValido(valor: unknown): boolean {
   return (
@@ -89,40 +87,11 @@ app.get('/api/produtos', async (req, res) => {
 
     const [rows] = await db.query(query, params);
 
-    const produtos = (rows as Array<{
-      id: number;
-      id_categoria: number;
-      nome: string;
-      preco: string | null;
-      estoque: number | null;
-      imagem: string | null;
-      descricao: string | null;
-      categoria: string | null;
-    }>).map((row) => {
-      const produto = new Produto(
-        row.id_categoria,
-        row.nome,
-        row.preco === null ? null : Number(row.preco),
-        row.estoque,
-        row.imagem,
-        row.descricao
-      );
-
-      return {
-        id: row.id,
-        id_categoria: produto.idCategoria,
-        nome: produto.nome,
-        preco: produto.preco === null ? null : produto.preco.toFixed(2),
-        estoque: produto.estoque,
-        imagem: produto.imagem,
-        descricao: produto.descricao,
-        categoria: row.categoria
-      };
-    });
+    const produtos = ProdutoService.converterProdutos(
+      rows as ProdutoRow[]
+    );
 
     res.json(produtos);
-
-
 
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
@@ -191,7 +160,7 @@ app.get('/api/produtos/:id', async (req, res) => {
   }
 });
 
-app.post('/api/produtos', async (req, res) => {
+app.post('/api/produtos', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const {
       nome,
@@ -265,7 +234,7 @@ app.post('/api/produtos', async (req, res) => {
   }
 });
 
-app.put('/api/produtos/:id', async (req, res) => {
+app.put('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -352,7 +321,7 @@ app.put('/api/produtos/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/produtos/:id', async (req, res) => {
+app.delete('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -717,7 +686,7 @@ app.post('/api/usuarios', async (req, res) => {
   }
 
   try {
-    const usuario = new Usuario(nome, email, cpf, telefone);
+    const usuario: Usuario = new Cliente(nome, email, cpf, telefone);
     const senhaHash = await bcrypt.hash(senha, 12);
 
     await db.execute(
@@ -783,7 +752,7 @@ app.post('/api/login', async (req, res) => {
 
   try {
     const [rows]: any = await db.execute(
-      'SELECT id, nome, email, senha FROM usuario WHERE email = ?',
+      'SELECT id, nome, email, senha, tipo_usuario FROM usuario WHERE email = ?',
       [email.trim()]
     );
 
@@ -799,7 +768,10 @@ app.post('/api/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: usuario.id },
+      {
+        id: usuario.id,
+        tipo_usuario: usuario.tipo_usuario
+      },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
@@ -879,7 +851,7 @@ app.put('/api/perfil', authMiddleware, async (req, res) => {
 
     const atual = rows[0];
 
-    const usuario = new Usuario(
+    const usuario: Usuario = new Cliente(
       nome ?? atual.nome,
       atual.email,
       cpf ?? atual.cpf,
