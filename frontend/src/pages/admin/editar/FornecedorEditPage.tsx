@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { api } from "../../../api/axios";
+import axios from "axios";
 
 type Props = {
   fornecedorId: number;
@@ -39,8 +40,16 @@ export function FornecedorEditPage({ fornecedorId, onSuccess }: Props) {
       await api.put(`/fornecedores/${fornecedorId}`, form);
       alert("Fornecedor atualizado com sucesso!");
       onSuccess();
-    } catch (err: any) {
-      console.error("Erro ao atualizar fornecedor:", err.response?.data || err.message);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        console.error(
+          "Erro ao atualizar fornecedor:",
+          err.response?.data || err.message
+        );
+      } else {
+        console.error("Erro desconhecido:", err);
+      }
+
       alert("Erro ao salvar as alterações do fornecedor.");
     } finally {
       setLoading(false);

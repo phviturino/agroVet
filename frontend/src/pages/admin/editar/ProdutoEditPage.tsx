@@ -45,8 +45,12 @@ export function ProdutoEditPage({ produtoId, onSuccess }: Props) {
       await api.put(`/produtos/${produtoId}`, dadosParaEnviar);
       alert("Produto atualizado com sucesso!");
       onSuccess();
-    } catch (err: any) {
-      alert("Erro ao salvar as alterações do produto. Verifique se a rota PUT existe no backend.");
+    } catch (err: unknown) {
+      console.error("Erro ao atualizar produto:", err);
+
+      alert(
+        "Erro ao salvar as alterações do produto. Verifique se a rota PUT existe no backend."
+      );
     } finally {
       setLoading(false);
     }

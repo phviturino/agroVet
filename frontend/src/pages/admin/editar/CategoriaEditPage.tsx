@@ -32,8 +32,13 @@ export function CategoriaEditPage({ categoriaId, onSuccess }: Props) {
       await api.put(`/categorias/${categoriaId}`, form);
       alert("Categoria atualizada com sucesso!");
       onSuccess();
-    } catch (err: any) {
-      console.error("Erro ao atualizar categoria:", err.response?.data || err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Erro ao atualizar categoria:", err.message);
+      } else {
+        console.error("Erro desconhecido:", err);
+      }
+
       alert("Erro ao salvar as alterações da categoria.");
     } finally {
       setLoading(false);

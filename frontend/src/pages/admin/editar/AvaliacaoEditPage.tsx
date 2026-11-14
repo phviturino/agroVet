@@ -1,4 +1,4 @@
-
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
 
@@ -116,13 +116,17 @@ export function AvaliacaoEditPage({
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao editar avaliação:", error);
 
-      setErro(
-        error.response?.data?.mensagem ||
-        "Não foi possível atualizar a avaliação."
-      );
+      if (axios.isAxiosError(error)) {
+        setErro(
+          error.response?.data?.mensagem ||
+          "Não foi possível atualizar a avaliação."
+        );
+      } else {
+        setErro("Não foi possível atualizar a avaliação.");
+      }
     } finally {
       setSalvando(false);
     }
