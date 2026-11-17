@@ -11,6 +11,7 @@ import { authMiddleware } from './middlewares/authMiddleware';
 import avaliacaoRoutes from './routes/avaliacao';
 import { ProdutoService, type ProdutoRow } from './services/ProdutoService';
 import { adminMiddleware } from './middlewares/adminMiddleware';
+import type { RowDataPacket, ResultSetHeader } from "mysql2";
 
 const app = express();
 const PORT = 3001;
@@ -103,11 +104,12 @@ app.get('/api/produtos', async (req, res) => {
 
 app.get('/api/produtos/destaque', async (req, res) => {
   try {
-    const [rows]: any = await db.query(
+    const [rows] = await db.query<RowDataPacket[][]>(
       'CALL sp_produtos_destaque()'
     );
 
     const produtos = Array.isArray(rows[0]) ? rows[0] : rows;
+
     res.json(produtos);
   } catch (error) {
     console.error('Erro ao buscar destaques:', error);
@@ -127,7 +129,7 @@ app.get('/api/produtos/:id', async (req, res) => {
       });
     }
 
-    const [rows]: any = await db.query(
+    const [rows] = await db.query<RowDataPacket[]>(
       `
       SELECT
         p.id,
@@ -195,7 +197,7 @@ app.post('/api/produtos', authMiddleware, adminMiddleware, async (req, res) => {
       });
     }
 
-    const [categorias]: any = await db.query(
+    const [categorias] = await db.query<RowDataPacket[]>(
       'SELECT id FROM categoria WHERE id = ?',
       [id_categoria]
     );
@@ -206,7 +208,7 @@ app.post('/api/produtos', authMiddleware, adminMiddleware, async (req, res) => {
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       `
       INSERT INTO produto
         (nome, preco, estoque, id_categoria, imagem, descricao)
@@ -270,7 +272,7 @@ app.put('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res) =
       });
     }
 
-    const [categorias]: any = await db.query(
+    const [categorias] = await db.query<RowDataPacket[]>(
       'SELECT id FROM categoria WHERE id = ?',
       [id_categoria]
     );
@@ -281,7 +283,7 @@ app.put('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res) =
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       `
       UPDATE produto
       SET
@@ -331,7 +333,7 @@ app.delete('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       'DELETE FROM produto WHERE id = ?',
       [id]
     );
@@ -377,7 +379,7 @@ app.get('/api/categorias/:id', async (req, res) => {
       });
     }
 
-    const [rows]: any = await db.query(
+    const [rows] = await db.query<RowDataPacket[]>(
       'SELECT id, nome, `descricao` AS descricao FROM categoria WHERE id = ?',
       [id]
     );
@@ -407,7 +409,7 @@ app.post('/api/categorias', async (req, res) => {
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       'INSERT INTO categoria (nome, `descricao`) VALUES (?, ?)',
       [nome.trim(), descricao || '']
     );
@@ -441,7 +443,7 @@ app.put('/api/categorias/:id', async (req, res) => {
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       'UPDATE categoria SET nome = ?, `descricao` = ? WHERE id = ?',
       [nome.trim(), descricao || '', id]
     );
@@ -473,7 +475,7 @@ app.delete('/api/categorias/:id', async (req, res) => {
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       'DELETE FROM categoria WHERE id = ?',
       [id]
     );
@@ -519,7 +521,7 @@ app.get('/api/fornecedores/:id', async (req, res) => {
       });
     }
 
-    const [rows]: any = await db.query(
+    const [rows] = await db.query<RowDataPacket[]>(
       'SELECT * FROM fornecedor WHERE id = ?',
       [id]
     );
@@ -549,7 +551,7 @@ app.post('/api/fornecedores', async (req, res) => {
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       `
       INSERT INTO fornecedor
         (nome, cnpj, telefone, email)
@@ -592,7 +594,7 @@ app.put('/api/fornecedores/:id', async (req, res) => {
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       `
       UPDATE fornecedor
       SET nome = ?, cnpj = ?, telefone = ?, email = ?
@@ -634,7 +636,7 @@ app.delete('/api/fornecedores/:id', async (req, res) => {
       });
     }
 
-    const [result]: any = await db.query(
+    const [result] = await db.query<ResultSetHeader>(
       'DELETE FROM fornecedor WHERE id = ?',
       [id]
     );
@@ -751,7 +753,7 @@ app.post('/api/login', async (req, res) => {
   }
 
   try {
-    const [rows]: any = await db.execute(
+    const [rows] = await db.execute<RowDataPacket[]>(
       'SELECT id, nome, email, senha, tipo_usuario FROM usuario WHERE email = ?',
       [email.trim()]
     );
@@ -799,7 +801,7 @@ app.get('/api/perfil', authMiddleware, async (req, res) => {
   try {
     const usuarioId = res.locals.usuarioId;
 
-    const [rows]: any = await db.execute(
+    const [rows] = await db.execute<RowDataPacket[]>(
       `SELECT id, nome, email, cpf, telefone
        FROM usuario
        WHERE id = ?`,
@@ -838,7 +840,7 @@ app.put('/api/perfil', authMiddleware, async (req, res) => {
       });
     }
 
-    const [rows]: any = await db.execute(
+    const [rows] = await db.execute<RowDataPacket[]>(
       'SELECT id, nome, email, cpf, telefone FROM usuario WHERE id = ?',
       [usuarioId]
     );
@@ -882,7 +884,7 @@ app.put('/api/perfil', authMiddleware, async (req, res) => {
       senhaHash = await bcrypt.hash(senha, 12);
     }
 
-    const [duplicados]: any = await db.execute(
+    const [duplicados] = await db.execute<RowDataPacket[]>(
       'SELECT id FROM usuario WHERE cpf = ? AND id <> ?',
       [usuario.cpf, usuarioId]
     );
