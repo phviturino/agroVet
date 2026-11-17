@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error("Usuário não autenticado!");
     }
 
-    const resposta = await fetch("http://localhost:3001/api/perfil", {
+    const resposta = await fetch("/api/perfil", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error("Usuário não autenticado!");
     }
 
-    const resposta = await fetch("http://localhost:3001/api/perfil", {
+    const resposta = await fetch("/api/perfil", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

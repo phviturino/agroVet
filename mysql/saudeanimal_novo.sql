@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 12/11/2026 às 21:03
+-- Tempo de geração: 17/11/2026 às 01:18
 -- Versão do servidor: 10.11.16-MariaDB
 -- Versão do PHP: 8.5.12
 
@@ -840,19 +840,20 @@ CREATE TABLE `usuario` (
   `cpf` varchar(11) NOT NULL,
   `telefone` varchar(20) NOT NULL,
   `senha` varchar(255) NOT NULL,
-  `criado_em` timestamp NULL DEFAULT current_timestamp()
+  `criado_em` timestamp NULL DEFAULT current_timestamp(),
+  `tipo_usuario` enum('admin','cliente') NOT NULL DEFAULT 'cliente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `usuario`
 --
 
-INSERT INTO `usuario` (`id`, `nome`, `email`, `cpf`, `telefone`, `senha`, `criado_em`) VALUES
-(7, 'ian', 'ian@gmail.com', '71138703176', '61984800449', '$2b$12$o2lKavPBMSGe6DJTwQwo0.ZJ33YBpBbiwBCBAtp6Ho4zF2Myu15lu', '2026-11-02 19:15:30'),
-(13, 'jubileu', 'teste@gmail.com', '52998224725', '44248625661', '$2b$12$oja5Eyyej.EBaSaDuvlz.uldEPpodA4jS5UdZ4c3wU7xIE/BGOskS', '2026-11-06 23:51:00'),
-(16, 'jonas', 'teste@agrovet.com', '11144477735', '44248625661', '$2b$12$V8PUZ8UOXjqSf484nEBxYeBu435LI7V58.HjFcHkrYEseJSl63DdG', '2026-11-07 00:24:11'),
-(20, 'Pedro Henrique Felippe Viturino', 'felippeviturinopedrohenrique@gmail.com', '11091108986', '44920009511', '$2b$12$0T.dNJC1JxkCfTHX27ksoe.TN1XgbZL/IrTPjU29Be53Pj7HgibzC', '2026-11-11 01:00:32'),
-(23, 'Ruan Ricardo Pereira', 'Ruan@agrovet.com', '33472216301', '44336186133', '$2b$12$oM3ht3qd0EFf7wkFkW.QJOXdnDmN7Esak5UaZqAOmvFLkdko2/TTK', '2026-11-12 18:05:51');
+INSERT INTO `usuario` (`id`, `nome`, `email`, `cpf`, `telefone`, `senha`, `criado_em`, `tipo_usuario`) VALUES
+(7, 'ian', 'ian@gmail.com', '71138703176', '61984800449', 'AgroVet@123', '2026-11-02 19:15:30', 'admin'),
+(13, 'jubileu', 'teste@gmail.com', '52998224725', '44248625661', '$2b$12$oja5Eyyej.EBaSaDuvlz.uldEPpodA4jS5UdZ4c3wU7xIE/BGOskS', '2026-11-06 23:51:00', 'cliente'),
+(16, 'jonas', 'teste@agrovet.com', '11144477735', '44248625661', '$2b$12$V8PUZ8UOXjqSf484nEBxYeBu435LI7V58.HjFcHkrYEseJSl63DdG', '2026-11-07 00:24:11', 'cliente'),
+(20, 'Pedro Henrique Felippe Viturino', 'felippeviturinopedrohenrique@gmail.com', '11091108986', '44920009511', '$2b$12$0T.dNJC1JxkCfTHX27ksoe.TN1XgbZL/IrTPjU29Be53Pj7HgibzC', '2026-11-11 01:00:32', 'admin'),
+(23, 'Ruan Ricardo Pereira', 'Ruan@agrovet.com', '33472216301', '44336186133', '$2b$12$oM3ht3qd0EFf7wkFkW.QJOXdnDmN7Esak5UaZqAOmvFLkdko2/TTK', '2026-11-12 18:05:51', 'cliente');
 
 --
 -- Índices para tabelas despejadas
