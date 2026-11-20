@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { validarCPF } from "../utils/validarCPF";
 
 export default function Perfil() {
-  const { usuario, carregarPerfil, atualizarPerfil } = useAuth();
+  const { usuario, carregarPerfil, atualizarPerfil, logout } = useAuth();
 
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
@@ -62,6 +62,11 @@ export default function Perfil() {
     setMensagem("");
     setSenha("");
     setConfirmarSenha("");
+  }
+
+  function fazerLogout() {
+    logout();
+    window.location.replace("/login");
   }
 
   async function salvarPerfil(evento: FormEvent<HTMLFormElement>) {
@@ -196,13 +201,23 @@ export default function Perfil() {
                 <strong>Telefone:</strong> {usuario.telefone}
               </p>
 
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={iniciarEdicao}
-              >
-                Editar perfil
-              </button>
+              <div className="d-flex gap-2 flex-wrap">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={iniciarEdicao}
+                >
+                  Editar perfil
+                </button>
+
+                <button type="button"
+                  className="btn btn-outline-danger"
+                  onClick={logout}
+                >
+                  <i className="bi bi-box-arrow-right me-2"></i>
+                  Sair da Conta
+                </button>
+              </div>
             </>
           ) : (
             <form onSubmit={salvarPerfil}>

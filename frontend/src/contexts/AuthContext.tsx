@@ -16,6 +16,7 @@ interface Usuario {
 
 interface AuthContextType {
   usuario: Usuario | null;
+  logout: () => void;
   carregarPerfil: () => Promise<void>;
   atualizarPerfil: (dados: {
     nome?: string;
@@ -30,6 +31,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  
+  function logout() {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("toastPendente");
+    setUsuario(null);
+  }
 
   async function carregarPerfil() {
     const token = localStorage.getItem("token");
@@ -89,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ usuario, carregarPerfil, atualizarPerfil }}
+      value={{ usuario, carregarPerfil, atualizarPerfil, logout }}
     >
       {children}
     </AuthContext.Provider>

@@ -942,6 +942,14 @@ app.put('/api/perfil', authMiddleware, async (req, res) => {
   }
 });
 
+app.get(
+  '/api/admin/verificar' , authMiddleware, adminMiddleware, (req, res) => {
+    res.status(200).json({
+      mensagem: 'Acesso administrativo autorizado!'
+    });
+  }
+);
+
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor backend rodando em http://localhost:${PORT}`);

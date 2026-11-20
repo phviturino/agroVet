@@ -10,6 +10,8 @@ export function ProdutoEditPage({ produtoId, onSuccess }: Props) {
   const [form, setForm] = useState({
     nome: "",
     preço: "",
+    estoque: "",
+    id_categoria: "",
     imagem: "",
     descricao: "",
   });
@@ -21,7 +23,9 @@ export function ProdutoEditPage({ produtoId, onSuccess }: Props) {
         const response = await api.get(`/produtos/${produtoId}`);
         setForm({
           nome: response.data.nome || "",
-          preço: response.data.preço || "",
+          preço: String(response.data.preco ?? ""),
+          estoque: String(response.data.estoque ?? ""),
+          id_categoria: String(response.data.id_categoria ?? ""),
           imagem: response.data.imagem || "",
           descricao: response.data.descricao || "",
         });
@@ -38,8 +42,12 @@ export function ProdutoEditPage({ produtoId, onSuccess }: Props) {
 
     try {
       const dadosParaEnviar = {
-        ...form,
-        preço: Number(String(form.preço).replace(',', '.')),
+        nome: form.nome,
+        preco: Number(String(form.preço).replace(",", ".")),
+        estoque: Number(form.estoque),
+        id_categoria: Number(form.id_categoria),
+        imagem: form.imagem,
+        descricao: form.descricao,
       };
 
       await api.put(`/produtos/${produtoId}`, dadosParaEnviar);

@@ -9,16 +9,13 @@ import WhatsAppFloat from "./components/WhatsAppFloat";
 import Cadastro from './pages/Cadastro';
 import Login from "./pages/Login";
 import Perfil from "./pages/Perfil";
+import AdminRoute from './components/AdminRoute';
 
 export default function App() {
 
   const path = window.location.pathname;
 
   const renderPage = () => {
-
-    if (path === '/admin') {
-      return <AdminIndex />;
-    }
 
     if (path === '/produtos') {
       return <Produtos />;
@@ -48,7 +45,11 @@ export default function App() {
   const isHome = path === '/' || path === '';
 
   if (path === '/admin') {
-    return <AdminIndex />;
+    return (
+      <AdminRoute>
+        <AdminIndex />
+      </AdminRoute>
+    );
   }
 
   return (
