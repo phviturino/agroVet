@@ -97,7 +97,7 @@ app.get('/api/produtos', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
     res.status(500).json({
-      erro: 'Erro interno ao buscar produtos.'
+      mensagem: 'Erro interno ao buscar produtos.'
     });
   }
 });
@@ -114,7 +114,7 @@ app.get('/api/produtos/destaque', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar destaques:', error);
     res.status(500).json({
-      erro: 'Erro interno ao buscar produtos em destaque.'
+      mensagem: 'Erro interno ao buscar produtos em destaque.'
     });
   }
 });
@@ -125,7 +125,7 @@ app.get('/api/produtos/:id', async (req, res) => {
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID do produto inválido.'
+        mensagem: 'ID do produto inválido.'
       });
     }
 
@@ -149,7 +149,7 @@ app.get('/api/produtos/:id', async (req, res) => {
 
     if (rows.length === 0) {
       return res.status(404).json({
-        erro: 'Produto não encontrado.'
+        mensagem: 'Produto não encontrado.'
       });
     }
 
@@ -157,7 +157,7 @@ app.get('/api/produtos/:id', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar produto:', error);
     res.status(500).json({
-      erro: 'Erro interno ao buscar produto.'
+      mensagem: 'Erro interno ao buscar produto.'
     });
   }
 });
@@ -175,25 +175,25 @@ app.post('/api/produtos', authMiddleware, adminMiddleware, async (req, res) => {
 
     if (typeof nome !== 'string' || !nome.trim()) {
       return res.status(400).json({
-        erro: 'O nome do produto é obrigatório.'
+        mensagem: 'O nome do produto é obrigatório.'
       });
     }
 
     if (!precoValido(preco)) {
       return res.status(400).json({
-        erro: 'Informe um preço válido.'
+        mensagem: 'Informe um preço válido.'
       });
     }
 
     if (!estoqueValido(estoque)) {
       return res.status(400).json({
-        erro: 'Informe um estoque válido.'
+        mensagem: 'Informe um estoque válido.'
       });
     }
 
     if (!idValido(String(id_categoria ?? ''))) {
       return res.status(400).json({
-        erro: 'Informe uma categoria válida.'
+        mensagem: 'Informe uma categoria válida.'
       });
     }
 
@@ -204,7 +204,7 @@ app.post('/api/produtos', authMiddleware, adminMiddleware, async (req, res) => {
 
     if (categorias.length === 0) {
       return res.status(400).json({
-        erro: 'A categoria informada não existe.'
+        mensagem: 'A categoria informada não existe.'
       });
     }
 
@@ -231,7 +231,7 @@ app.post('/api/produtos', authMiddleware, adminMiddleware, async (req, res) => {
   } catch (error) {
     console.error('Erro ao cadastrar produto:', error);
     res.status(500).json({
-      erro: 'Erro ao cadastrar produto.'
+      mensagem: 'Erro ao cadastrar produto.'
     });
   }
 });
@@ -250,25 +250,25 @@ app.put('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res) =
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID do produto inválido.'
+        mensagem: 'ID do produto inválido.'
       });
     }
 
     if (typeof nome !== 'string' || !nome.trim()) {
       return res.status(400).json({
-        erro: 'O nome do produto é obrigatório.'
+        mensagem: 'O nome do produto é obrigatório.'
       });
     }
 
     if (!precoValido(preco) || !estoqueValido(estoque)) {
       return res.status(400).json({
-        erro: 'Preço ou estoque inválido.'
+        mensagem: 'Preço ou estoque inválido.'
       });
     }
 
     if (!idValido(String(id_categoria ?? ''))) {
       return res.status(400).json({
-        erro: 'Categoria inválida.'
+        mensagem: 'Categoria inválida.'
       });
     }
 
@@ -279,7 +279,7 @@ app.put('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res) =
 
     if (categorias.length === 0) {
       return res.status(400).json({
-        erro: 'A categoria informada não existe.'
+        mensagem: 'A categoria informada não existe.'
       });
     }
 
@@ -308,7 +308,7 @@ app.put('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res) =
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
-        erro: 'Produto não encontrado para atualizar.'
+        mensagem: 'Produto não encontrado para atualizar.'
       });
     }
 
@@ -318,7 +318,7 @@ app.put('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res) =
   } catch (error) {
     console.error('Erro ao atualizar produto:', error);
     res.status(500).json({
-      erro: 'Erro ao atualizar produto.'
+      mensagem: 'Erro ao atualizar produto.'
     });
   }
 });
@@ -329,7 +329,7 @@ app.delete('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID do produto inválido.'
+        mensagem: 'ID do produto inválido.'
       });
     }
 
@@ -340,7 +340,7 @@ app.delete('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
-        erro: 'Produto não encontrado.'
+        mensagem: 'Produto não encontrado.'
       });
     }
 
@@ -350,7 +350,7 @@ app.delete('/api/produtos/:id', authMiddleware, adminMiddleware, async (req, res
   } catch (error) {
     console.error('Erro ao excluir produto:', error);
     res.status(500).json({
-      erro: 'Erro ao excluir produto.'
+      mensagem: 'Erro ao excluir produto.'
     });
   }
 });
@@ -364,7 +364,7 @@ app.get('/api/categorias', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar categorias:', error);
     res.status(500).json({
-      erro: 'Erro ao buscar categorias.'
+      mensagem: 'Erro ao buscar categorias.'
     });
   }
 });
@@ -375,7 +375,7 @@ app.get('/api/categorias/:id', async (req, res) => {
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID da categoria inválido.'
+        mensagem: 'ID da categoria inválido.'
       });
     }
 
@@ -386,7 +386,7 @@ app.get('/api/categorias/:id', async (req, res) => {
 
     if (rows.length === 0) {
       return res.status(404).json({
-        erro: 'Categoria não encontrada.'
+        mensagem: 'Categoria não encontrada.'
       });
     }
 
@@ -394,7 +394,7 @@ app.get('/api/categorias/:id', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar categoria:', error);
     res.status(500).json({
-      erro: 'Erro ao buscar categoria.'
+      mensagem: 'Erro ao buscar categoria.'
     });
   }
 });
@@ -405,7 +405,7 @@ app.post('/api/categorias', async (req, res) => {
 
     if (typeof nome !== 'string' || !nome.trim()) {
       return res.status(400).json({
-        erro: 'O nome da categoria é obrigatório.'
+        mensagem: 'O nome da categoria é obrigatório.'
       });
     }
 
@@ -421,7 +421,7 @@ app.post('/api/categorias', async (req, res) => {
   } catch (error) {
     console.error('Erro ao cadastrar categoria:', error);
     res.status(500).json({
-      erro: 'Erro ao cadastrar categoria.'
+      mensagem: 'Erro ao cadastrar categoria.'
     });
   }
 });
@@ -433,13 +433,13 @@ app.put('/api/categorias/:id', async (req, res) => {
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID da categoria inválido.'
+        mensagem: 'ID da categoria inválido.'
       });
     }
 
     if (typeof nome !== 'string' || !nome.trim()) {
       return res.status(400).json({
-        erro: 'O nome da categoria é obrigatório.'
+        mensagem: 'O nome da categoria é obrigatório.'
       });
     }
 
@@ -450,7 +450,7 @@ app.put('/api/categorias/:id', async (req, res) => {
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
-        erro: 'Categoria não encontrada.'
+        mensagem: 'Categoria não encontrada.'
       });
     }
 
@@ -460,7 +460,7 @@ app.put('/api/categorias/:id', async (req, res) => {
   } catch (error) {
     console.error('Erro ao atualizar categoria:', error);
     res.status(500).json({
-      erro: 'Erro ao atualizar categoria.'
+      mensagem: 'Erro ao atualizar categoria.'
     });
   }
 });
@@ -471,7 +471,7 @@ app.delete('/api/categorias/:id', async (req, res) => {
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID da categoria inválido.'
+        mensagem: 'ID da categoria inválido.'
       });
     }
 
@@ -482,7 +482,7 @@ app.delete('/api/categorias/:id', async (req, res) => {
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
-        erro: 'Categoria não encontrada.'
+        mensagem: 'Categoria não encontrada.'
       });
     }
 
@@ -492,7 +492,7 @@ app.delete('/api/categorias/:id', async (req, res) => {
   } catch (error) {
     console.error('Erro ao excluir categoria:', error);
     res.status(500).json({
-      erro: 'Erro ao excluir categoria.'
+      mensagem: 'Erro ao excluir categoria.'
     });
   }
 });
@@ -506,7 +506,7 @@ app.get('/api/fornecedores', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar fornecedores:', error);
     res.status(500).json({
-      erro: 'Erro ao buscar fornecedores.'
+      mensagem: 'Erro ao buscar fornecedores.'
     });
   }
 });
@@ -517,7 +517,7 @@ app.get('/api/fornecedores/:id', async (req, res) => {
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID do fornecedor inválido.'
+        mensagem: 'ID do fornecedor inválido.'
       });
     }
 
@@ -528,7 +528,7 @@ app.get('/api/fornecedores/:id', async (req, res) => {
 
     if (rows.length === 0) {
       return res.status(404).json({
-        erro: 'Fornecedor não encontrado.'
+        mensagem: 'Fornecedor não encontrado.'
       });
     }
 
@@ -536,7 +536,7 @@ app.get('/api/fornecedores/:id', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar fornecedor:', error);
     res.status(500).json({
-      erro: 'Erro ao buscar fornecedor.'
+      mensagem: 'Erro ao buscar fornecedor.'
     });
   }
 });
@@ -547,7 +547,7 @@ app.post('/api/fornecedores', async (req, res) => {
 
     if (typeof nome !== 'string' || !nome.trim()) {
       return res.status(400).json({
-        erro: 'O nome do fornecedor é obrigatório.'
+        mensagem: 'O nome do fornecedor é obrigatório.'
       });
     }
 
@@ -572,7 +572,7 @@ app.post('/api/fornecedores', async (req, res) => {
   } catch (error) {
     console.error('Erro ao cadastrar fornecedor:', error);
     res.status(500).json({
-      erro: 'Erro ao cadastrar fornecedor.'
+      mensagem: 'Erro ao cadastrar fornecedor.'
     });
   }
 });
@@ -584,13 +584,13 @@ app.put('/api/fornecedores/:id', async (req, res) => {
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID do fornecedor inválido.'
+        mensagem: 'ID do fornecedor inválido.'
       });
     }
 
     if (typeof nome !== 'string' || !nome.trim()) {
       return res.status(400).json({
-        erro: 'O nome do fornecedor é obrigatório.'
+        mensagem: 'O nome do fornecedor é obrigatório.'
       });
     }
 
@@ -611,7 +611,7 @@ app.put('/api/fornecedores/:id', async (req, res) => {
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
-        erro: 'Fornecedor não encontrado.'
+        mensagem: 'Fornecedor não encontrado.'
       });
     }
 
@@ -621,7 +621,7 @@ app.put('/api/fornecedores/:id', async (req, res) => {
   } catch (error) {
     console.error('Erro ao atualizar fornecedor:', error);
     res.status(500).json({
-      erro: 'Erro ao atualizar fornecedor.'
+      mensagem: 'Erro ao atualizar fornecedor.'
     });
   }
 });
@@ -632,7 +632,7 @@ app.delete('/api/fornecedores/:id', async (req, res) => {
 
     if (!idValido(id)) {
       return res.status(400).json({
-        erro: 'ID do fornecedor inválido.'
+        mensagem: 'ID do fornecedor inválido.'
       });
     }
 
@@ -643,7 +643,7 @@ app.delete('/api/fornecedores/:id', async (req, res) => {
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
-        erro: 'Fornecedor não encontrado.'
+        mensagem: 'Fornecedor não encontrado.'
       });
     }
 
@@ -653,7 +653,7 @@ app.delete('/api/fornecedores/:id', async (req, res) => {
   } catch (error) {
     console.error('Erro ao excluir fornecedor:', error);
     res.status(500).json({
-      erro: 'Erro ao excluir fornecedor.'
+      mensagem: 'Erro ao excluir fornecedor.'
     });
   }
 });

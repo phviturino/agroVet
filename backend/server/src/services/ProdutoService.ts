@@ -1,5 +1,5 @@
-
 import { Produto } from '../models/Produto';
+import type { IProduto } from '../interfaces/IProduto';
 
 export interface ProdutoRow {
   id: number;
@@ -12,9 +12,11 @@ export interface ProdutoRow {
   categoria: string | null;
 }
 
+type CriadorProduto = (row: ProdutoRow) => IProduto;
+
 export class ProdutoService {
-  static converterProduto(row: ProdutoRow) {
-    const produto = new Produto(
+  private static criadorPadrao: CriadorProduto = (row) =>
+    new Produto(
       row.id_categoria,
       row.nome,
       row.preco === null ? null : Number(row.preco),
@@ -22,6 +24,12 @@ export class ProdutoService {
       row.imagem,
       row.descricao
     );
+
+  static converterProduto(
+    row: ProdutoRow,
+    criarProduto: CriadorProduto = ProdutoService.criadorPadrao
+  ) {
+    const produto = criarProduto(row);
 
     return {
       id: row.id,
@@ -37,7 +45,12 @@ export class ProdutoService {
     };
   }
 
-  static converterProdutos(rows: ProdutoRow[]) {
-    return rows.map((row) => this.converterProduto(row));
+  static converterProdutos(
+    rows: ProdutoRow[],
+    criarProduto: CriadorProduto = ProdutoService.criadorPadrao
+  ) {
+    return rows.map((row) =>
+      this.converterProduto(row, criarProduto)
+    );
   }
 }
