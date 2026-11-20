@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiURL } from '../api/constante';
+import ProdutoCard from '../components/ProdutoCard';
 
 interface Produto {
   id: number;
@@ -8,6 +9,11 @@ interface Produto {
   preco: number;
   imagem: string;
   categoria?: string;
+}
+
+interface Avaliacao {
+  id_produto: number;
+  nota: number;
 }
 
 export default function Produtos() {
@@ -20,8 +26,24 @@ export default function Produtos() {
   const searchParams = new URLSearchParams(window.location.search);
   const termoBusca = searchParams.get('busca') || '';
 
+  const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
+
   useEffect(() => {
     setLoading(true);
+
+    fetch(`${apiURL}/avaliacoes`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Erro ao buscar avaliações");
+        }
+        return res.json();
+      })
+      .then((data: Avaliacao[]) => {
+        setAvaliacoes(data);
+      })
+      .catch((erro) => {
+        console.error("Erro ao carregar avaliações:", erro);
+      });
 
     const url = termoBusca
       ? `${apiURL}/produtos?busca=${encodeURIComponent(termoBusca)}`
@@ -116,38 +138,13 @@ export default function Produtos() {
       ) : (
         <div className="row row-cols-2 row-cols-md-4 g-4" id="lista-produtos">
           {produtosFiltrados.map((produto) => (
-            <div key={produto.id} className="col">
-              <div className="card h-100 border-0 shadow bg-dark text-white position-relative">
-                <div className="p-3 bg-white d-flex align-items-center justify-content-center container-foto-produto">
-                  <img
-                    src={`/img/${produto.imagem}`}
-                    className="img-fluid foto-produto"
-                    alt={produto.nome}
-                  />
-                </div>
-
-                <div className="card-body d-flex flex-column text-center">
-                  <h5 className="card-title fs-6 text-uppercase mb-2 nome-produto">
-                    {produto.nome}
-                  </h5>
-
-                  <p className="card-text fw-bold fs-5 mt-auto mb-2 preço-produto text-warning">
-                    R${' '}
-                    {Number(produto.preco).toLocaleString('pt-BR', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </p>
-
-                  <a
-                    href={`/produtos/${produto.id}`}
-                    className="btn btn-success btn-sm w-100 fw-bold py-2 text-uppercase mt-auto stretched-link"
-                  >
-                    Ver Produto
-                  </a>
-                </div>
-              </div>
-            </div>
+            <ProdutoCard
+              key={produto.id}
+              produto={produto}
+              avaliacoes={avaliacoes.filter(
+                (avaliacao) => avaliacao.id_produto === produto.id
+              )}
+            />
           ))}
         </div>
       )}
