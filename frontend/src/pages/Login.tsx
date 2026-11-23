@@ -1,5 +1,5 @@
 
-import { useState, type SyntheticEvent } from "react";
+import {useState, type SyntheticEvent } from "react";
 import { toast } from "react-toastify";
 import "./Login.css";
 
@@ -112,9 +112,8 @@ function Login() {
                 aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
               >
                 <i
-                  className={`bi ${
-                    mostrarSenha ? "bi-eye-slash" : "bi-eye"
-                  }`}
+                  className={`bi ${mostrarSenha ? "bi-eye-slash" : "bi-eye"
+                    }`}
                 ></i>
               </button>
             </div>

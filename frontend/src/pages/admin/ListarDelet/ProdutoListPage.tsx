@@ -6,7 +6,7 @@ import Paginacao from "../../../components/Paginacao";
 type Produto = {
   id: number;
   nome: string;
-  preço: number;
+  preco: number;
   imagem: string;
   descricao: string;
 };
@@ -105,7 +105,7 @@ export function ProdutoListPage({ onEdit }: Props) {
               <tr key={p.id}>
                 <td>{p.id}</td>
                 <td>{p.nome}</td>
-                <td>R$ {Number(p.preço).toFixed(2)}</td>
+                <td>R$ {Number(p.preco).toFixed(2)}</td>
 
                 <td className="text-end">
                   {onEdit && (
