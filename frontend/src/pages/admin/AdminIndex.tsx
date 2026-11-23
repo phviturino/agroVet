@@ -71,18 +71,33 @@ export default function AdminIndex() {
       setErroGraficos(false);
 
       try {
-        const [resProdutos, resCategorias, resFornecedores] =
+        const [resCategorias, resFornecedores] =
           await Promise.all([
-            api.get<Produto[]>('/produtos'),
             api.get<Categoria[]>('/categorias'),
             api.get<Fornecedor[]>('/fornecedores')
           ]);
 
-        if (!ativo) return;
-
-        const produtos = resProdutos.data;
         const categorias = resCategorias.data;
         const fornecedores = resFornecedores.data;
+
+        const produtos: Produto[] = [];
+        let pagina = 1;
+        let totalPaginas = 1;
+
+        do {
+          const resposta = await api.get<{
+            dados: Produto[];
+            paginacao: { totalPaginas: number };
+          }>('/produtos', {
+            params: { page: pagina, limit: 100 }
+          });
+
+          produtos.push(...resposta.data.dados);
+          totalPaginas = resposta.data.paginacao.totalPaginas;
+          pagina++;
+        } while (pagina <= totalPaginas);
+
+        if (!ativo) return;
 
         const categoriasGrafico = categorias.map((categoria) => ({
           nome: categoria.nome,

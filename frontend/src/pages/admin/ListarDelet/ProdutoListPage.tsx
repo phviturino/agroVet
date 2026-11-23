@@ -1,3 +1,4 @@
+
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
@@ -11,6 +12,16 @@ type Produto = {
   descricao: string;
 };
 
+type RespostaProdutos = {
+  dados: Produto[];
+  paginacao: {
+    paginaAtual: number;
+    limite: number;
+    totalRegistros: number;
+    totalPaginas: number;
+  };
+};
+
 type Props = {
   onEdit?: (id: number) => void;
 };
@@ -19,35 +30,25 @@ export function ProdutoListPage({ onEdit }: Props) {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [loading, setLoading] = useState(true);
   const [paginaAtual, setPaginaAtual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [totalRegistros, setTotalRegistros] = useState(0);
 
   const produtosPorPagina = 10;
 
-  const totalPaginas = Math.ceil(
-    produtos.length / produtosPorPagina
-  );
-
-  const produtosPaginados = produtos.slice(
-    (paginaAtual - 1) * produtosPorPagina,
-    paginaAtual * produtosPorPagina
-  );
-
-  async function carregarProdutos() {
+  async function carregarProdutos(pagina: number) {
     setLoading(true);
 
     try {
-      const response = await api.get<Produto[]>("/produtos");
+      const response = await api.get<RespostaProdutos>("/produtos", {
+        params: {
+          page: pagina,
+          limit: produtosPorPagina
+        }
+      });
 
-      setProdutos(response.data);
-
-      setPaginaAtual((pagina) =>
-        Math.max(
-          1,
-          Math.min(
-            pagina,
-            Math.ceil(response.data.length / produtosPorPagina)
-          )
-        )
-      );
+      setProdutos(response.data.dados);
+      setTotalPaginas(response.data.paginacao.totalPaginas);
+      setTotalRegistros(response.data.paginacao.totalRegistros);
     } catch (err) {
       console.error("Erro ao carregar produtos:", err);
       toast.error("Erro ao carregar lista de produtos.");
@@ -57,8 +58,8 @@ export function ProdutoListPage({ onEdit }: Props) {
   }
 
   useEffect(() => {
-    carregarProdutos();
-  }, []);
+    carregarProdutos(paginaAtual);
+  }, [paginaAtual]);
 
   async function handleDelete(id: number) {
     if (!confirm("Tem certeza que deseja excluir este produto?")) {
@@ -70,7 +71,13 @@ export function ProdutoListPage({ onEdit }: Props) {
 
       toast.success("Produto excluído com sucesso!");
 
-      await carregarProdutos();
+      // Se a página ficar vazia após a exclusão,
+      // voltamos para a página anterior.
+      if (produtos.length === 1 && paginaAtual > 1) {
+        setPaginaAtual(paginaAtual - 1);
+      } else {
+        await carregarProdutos(paginaAtual);
+      }
     } catch (err) {
       console.error("Erro ao excluir produto:", err);
       toast.error("Erro ao excluir o produto.");
@@ -101,7 +108,7 @@ export function ProdutoListPage({ onEdit }: Props) {
           </thead>
 
           <tbody>
-            {produtosPaginados.map((p) => (
+            {produtos.map((p) => (
               <tr key={p.id}>
                 <td>{p.id}</td>
                 <td>{p.nome}</td>
@@ -129,10 +136,7 @@ export function ProdutoListPage({ onEdit }: Props) {
 
             {produtos.length === 0 && (
               <tr>
-                <td
-                  colSpan={4}
-                  className="text-center text-muted"
-                >
+                <td colSpan={4} className="text-center text-muted">
                   Nenhum produto cadastrado.
                 </td>
               </tr>
@@ -154,10 +158,10 @@ export function ProdutoListPage({ onEdit }: Props) {
           {" a "}
           {Math.min(
             paginaAtual * produtosPorPagina,
-            produtos.length
+            totalRegistros
           )}
           {" de "}
-          {produtos.length} produtos
+          {totalRegistros} produtos
         </p>
       )}
     </div>
