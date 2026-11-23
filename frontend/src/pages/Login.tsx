@@ -54,14 +54,18 @@ function Login() {
       }
 
       localStorage.setItem("token", dados.token);
+
       sessionStorage.setItem(
         "toastPendente",
         "Login realizado com sucesso!"
       );
 
       window.location.assign("/perfil");
-    } catch {
-      toast.error("Não foi possível conectar ao servidor. Tente novamente.");
+    } catch (erro) {
+      console.error("Erro ao realizar login:", erro);
+      toast.error(
+        "Não foi possível conectar ao servidor. Tente novamente."
+      );
     } finally {
       setCarregando(false);
     }

@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
@@ -25,7 +26,6 @@ export function AvaliacaoEditPage({
   const [comentario, setComentario] = useState("");
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
-  const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
 
   useEffect(() => {
@@ -80,18 +80,16 @@ export function AvaliacaoEditPage({
   ) {
     event.preventDefault();
 
-    setMensagem("");
-    setErro("");
 
     if (!Number.isInteger(nota) || nota < 1 || nota > 5) {
-      setErro("Selecione uma nota entre 1 e 5.");
+      toast.warning("Selecione uma nota entre 1 e 5.");
       return;
     }
 
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setErro("Você precisa estar logado para editar avaliações.");
+      toast.warning("Você precisa estar logado para editar avaliações.");
       return;
     }
 
@@ -111,7 +109,7 @@ export function AvaliacaoEditPage({
         }
       );
 
-      setMensagem("Avaliação atualizada com sucesso!");
+      toast.success("Avaliação atualizada com sucesso!");
 
       if (onSuccess) {
         onSuccess();
@@ -125,7 +123,7 @@ export function AvaliacaoEditPage({
           "Não foi possível atualizar a avaliação."
         );
       } else {
-        setErro("Não foi possível atualizar a avaliação.");
+        toast.error("Não foi possível atualizar a avaliação.");
       }
     } finally {
       setSalvando(false);
@@ -156,13 +154,7 @@ export function AvaliacaoEditPage({
         <div className="alert alert-danger">
           {erro}
         </div>
-      )}
-
-      {mensagem && (
-        <div className="alert alert-success">
-          {mensagem}
-        </div>
-      )}
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

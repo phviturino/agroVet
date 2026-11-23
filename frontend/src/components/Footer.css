@@ -1,0 +1,328 @@
+.agro-footer {
+  background: #111111;
+  color: #ffffff;
+  padding: 70px 0 20px;
+  border-top: 1px solid #292929;
+}
+
+.agro-footer a {
+  text-decoration: none;
+}
+
+.agro-footer-etiqueta {
+  display: block;
+  color: #c49a48;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+}
+
+/* IDENTIDADE E CONTATO */
+
+.agro-footer-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.agro-footer-identidade {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  max-width: 750px;
+}
+
+.agro-footer-logo {
+  width: 145px;
+  height: 145px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.agro-footer-identidade h2 {
+  font-size: clamp(24px, 3vw, 35px);
+  font-weight: 800;
+  margin-bottom: 14px;
+  color: #ffffff;
+}
+
+.agro-footer-identidade p {
+  color: #a9a9a9;
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 0;
+  max-width: 470px;
+}
+
+.agro-footer-redes {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  min-width: 190px;
+}
+
+.agro-footer-redes .agro-footer-etiqueta {
+  margin-bottom: 5px;
+}
+
+.agro-footer-redes a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #d0d0d0;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.agro-footer-redes a i {
+  color: #c49a48;
+  font-size: 19px;
+}
+
+.agro-footer-redes a:hover {
+  color: #d9ae59;
+}
+
+/* DIVISORES */
+
+.agro-footer-divisor {
+  height: 1px;
+  width: 100%;
+  background: #303030;
+  margin: 45px 0;
+}
+
+/* TÍTULO DAS LOJAS */
+
+.agro-footer-lojas-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.agro-footer-lojas-topo h3 {
+  font-size: 25px;
+  font-weight: 800;
+  margin: 0;
+  color: #ffffff;
+}
+
+.agro-footer-total {
+  color: #c49a48;
+  border: 1px solid #49402d;
+  background: #211e17;
+  padding: 8px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* CARDS DAS LOJAS */
+
+.agro-footer-lojas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.agro-footer-loja {
+  display: flex;
+  flex-direction: column;
+  background: #1b1b1b;
+  border: 1px solid #303030;
+  border-radius: 16px;
+  padding: 25px 20px;
+  min-width: 0;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.agro-footer-loja:hover {
+  border-color: #c49a48;
+  transform: translateY(-3px);
+}
+
+.agro-footer-loja-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: #302819;
+  color: #d9ae59;
+  border-radius: 12px;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.agro-footer-loja h4 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.agro-footer-loja p {
+  color: #a9a9a9;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 25px;
+}
+
+.agro-footer-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #d9ae59;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: auto;
+  transition: color 0.2s;
+}
+
+.agro-footer-whatsapp:hover {
+  color: #ffffff;
+}
+
+.agro-footer-whatsapp i:last-child {
+  margin-left: auto;
+}
+
+/* RODAPÉ INFERIOR */
+
+.agro-footer-inferior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.agro-footer-inferior p {
+  color: #8f8f8f;
+  font-size: 12px;
+  margin: 0;
+}
+
+.agro-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.agro-footer-links a {
+  color: #a9a9a9;
+  font-size: 12px;
+  transition: color 0.2s;
+}
+
+.agro-footer-links a:hover {
+  color: #d9ae59;
+}
+
+/* IMAGEM FINAL */
+
+.agro-footer-imagem-final {
+  display: flex;
+  justify-content: center;
+  margin-top: 35px;
+}
+
+.agro-footer-imagem-final img {
+  max-width: 100%;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* TABLETS */
+
+@media (max-width: 991px) {
+  .agro-footer {
+    padding-top: 55px;
+  }
+
+  .agro-footer-topo {
+    gap: 35px;
+  }
+
+  .agro-footer-logo {
+    width: 110px;
+    height: 110px;
+  }
+
+  .agro-footer-lojas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* CELULARES */
+
+@media (max-width: 575px) {
+  .agro-footer {
+    padding: 45px 0 20px;
+  }
+
+  .agro-footer-topo {
+    flex-direction: column;
+    gap: 35px;
+  }
+
+  .agro-footer-identidade {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .agro-footer-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .agro-footer-identidade h2 {
+    font-size: 26px;
+  }
+
+  .agro-footer-redes {
+    width: 100%;
+  }
+
+  .agro-footer-divisor {
+    margin: 35px 0;
+  }
+
+  .agro-footer-lojas-topo {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .agro-footer-lojas-topo h3 {
+    font-size: 22px;
+  }
+
+  .agro-footer-lojas {
+    grid-template-columns: 1fr;
+  }
+
+  .agro-footer-loja {
+    padding: 22px;
+  }
+
+  .agro-footer-inferior {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .agro-footer-links {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .agro-footer-imagem-final img {
+    max-height: 90px;
+  }
+}

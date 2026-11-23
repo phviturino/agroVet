@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
 import Paginacao from "../../../components/Paginacao";
@@ -51,7 +52,7 @@ export function AvaliacaoListPage({ onEdit }: Props) {
       );
     } catch (err) {
       console.error("Erro ao carregar avaliações:", err);
-      alert("Erro ao carregar lista de avaliações.");
+      toast.error("Erro ao carregar lista de avaliações.");
     } finally {
       setLoading(false);
     }
@@ -70,7 +71,7 @@ export function AvaliacaoListPage({ onEdit }: Props) {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("Você precisa estar logado para excluir avaliações.");
+        toast.warning("Você precisa estar logado para excluir avaliações.");
         return;
       }
 
@@ -80,14 +81,12 @@ export function AvaliacaoListPage({ onEdit }: Props) {
         },
       });
 
-      alert("Avaliação excluída com sucesso!");
+      toast.success("Avaliação excluída com sucesso!");
 
       await carregarAvaliacoes();
     } catch (err) {
       console.error("Erro ao excluir avaliação:", err);
-      alert(
-        "Não foi possível excluir a avaliação. Verifique se ela pertence ao seu usuário."
-      );
+      toast.error("Não foi possível excluir a avaliação. Verifique se ela pertence ao seu usuário.");
     }
   }
 

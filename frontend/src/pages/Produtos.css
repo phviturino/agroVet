@@ -1,0 +1,210 @@
+
+/* ========================================
+   CATÁLOGO DE PRODUTOS - AGROVET
+======================================== */
+
+.produtos-page {
+  min-height: 75vh;
+  padding: 65px 0 90px;
+  background: #f6f6f3;
+  color: #202020;
+}
+
+/* APRESENTAÇÃO */
+
+.produtos-apresentacao {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.produtos-etiqueta {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: #a77b16;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.produtos-apresentacao h1 {
+  max-width: 850px;
+  margin: 0 auto 16px;
+  color: #171717;
+  font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.produtos-apresentacao p {
+  max-width: 620px;
+  margin: 0 auto;
+  color: #686868;
+  font-size: 1rem;
+}
+
+/* FILTROS */
+
+.produtos-filtros {
+  margin-bottom: 30px;
+}
+
+.produtos-categorias {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 35px;
+}
+
+.produtos-categoria-btn {
+  padding: 10px 20px;
+  border: 1px solid #e9e5da;
+  border-radius: 30px;
+  background: #fff;
+  color: #444;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.produtos-categoria-btn:hover {
+  border-color: #b58a25;
+  color: #987018;
+  transform: translateY(-2px);
+}
+
+.produtos-categoria-btn.ativo {
+  background: #171717;
+  border-color: #171717;
+  color: #e5bd54;
+}
+
+.produtos-categoria-btn:focus-visible,
+.produtos-ordenar:focus-visible {
+  outline: 3px solid #b58a25;
+  outline-offset: 3px;
+}
+
+/* ORDENAÇÃO */
+
+.produtos-barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e9e5da;
+}
+
+.produtos-ordenar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid #e9e5da;
+  border-radius: 8px;
+  background: #fff;
+  color: #222;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.produtos-ordenar:hover {
+  border-color: #b58a25;
+  background: #fffaf0;
+}
+
+.produtos-contagem {
+  color: #777;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* CARREGAMENTO */
+
+.produtos-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 220px;
+}
+
+.produtos-spinner {
+  color: #b58a25;
+}
+
+/* CATÁLOGO VAZIO OU ERRO */
+
+.produtos-vazio {
+  padding: 65px 25px;
+  border: 1px solid #e9e5da;
+  border-radius: 14px;
+  background: #fff;
+  text-align: center;
+}
+
+.produtos-vazio h2 {
+  margin-bottom: 12px;
+  color: #171717;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.produtos-vazio p {
+  margin: 0;
+  color: #707070;
+  font-size: 0.95rem;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 768px) {
+  .produtos-page {
+    padding: 45px 0 60px;
+  }
+
+  .produtos-apresentacao {
+    margin-bottom: 30px;
+  }
+
+  .produtos-categorias {
+    gap: 8px;
+    margin-bottom: 25px;
+  }
+
+  .produtos-categoria-btn {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+
+  .produtos-barra {
+    flex-wrap: wrap;
+  }
+
+  .produtos-ordenar {
+    padding: 9px 12px;
+    font-size: 0.8rem;
+  }
+
+  .produtos-contagem {
+    font-size: 0.75rem;
+  }
+
+  .produtos-vazio {
+    padding: 45px 18px;
+  }
+}
+
+@media (max-width: 380px) {
+  .produtos-categoria-btn {
+    padding: 7px 11px;
+    font-size: 0.75rem;
+  }
+
+  .produtos-barra {
+    gap: 10px;
+  }
+}

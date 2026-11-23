@@ -1,0 +1,377 @@
+
+/* PÁGINA DE DETALHES - AGROVET */
+
+.detalhe-page {
+  min-height: 80vh;
+  padding: 45px 0 90px;
+  background: #f6f6f3;
+  color: #222;
+}
+
+.detalhe-voltar {
+  display: inline-block;
+  margin-bottom: 25px;
+  color: #777;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.detalhe-voltar:hover {
+  color: #b58a25;
+}
+
+/* PRODUTO */
+
+.detalhe-produto {
+  padding: 35px;
+  border: 1px solid #e9e5da;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.04);
+}
+
+.detalhe-imagem-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 430px;
+  padding: 30px;
+  border: 1px solid #f0eee8;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.detalhe-imagem-box img {
+  width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+}
+
+.detalhe-info {
+  padding: 10px 5px;
+}
+
+.detalhe-categoria {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #a77b16;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.detalhe-titulo {
+  margin-bottom: 18px;
+  color: #171717;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+/* ESTRELAS */
+
+.detalhe-avaliacao-resumo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.detalhe-estrelas {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 21px;
+  line-height: 1;
+}
+
+.detalhe-estrela-ativa {
+  color: #ff9b36;
+}
+
+.detalhe-estrela-inativa {
+  color: #d6d6d6;
+}
+
+.detalhe-nota {
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.detalhe-link-avaliacoes {
+  color: #777;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.detalhe-link-avaliacoes:hover {
+  color: #b58a25;
+  text-decoration: underline;
+}
+
+.detalhe-divisor {
+  height: 1px;
+  margin: 26px 0;
+  background: #eeeae1;
+}
+
+/* DESCRIÇÃO */
+
+.detalhe-descricao h2 {
+  margin-bottom: 12px;
+  color: #222;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.detalhe-descricao p {
+  margin: 0;
+  color: #686868;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+/* PREÇO E WHATSAPP */
+
+.detalhe-preco-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.detalhe-preco {
+  margin-bottom: 25px;
+  color: #987018;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  font-weight: 800;
+}
+
+.detalhe-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 15px 20px;
+  border-radius: 8px;
+  background: #198754;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.detalhe-whatsapp:hover {
+  background: #146c43;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.detalhe-ajuda {
+  margin: 12px 0 0;
+  color: #888;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* SEÇÃO DE AVALIAÇÕES */
+
+.detalhe-avaliacoes {
+  margin-top: 35px;
+  padding: 35px;
+  border: 1px solid #e9e5da;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.detalhe-secao-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #eeeae1;
+}
+
+.detalhe-secao-etiqueta {
+  display: block;
+  margin-bottom: 8px;
+  color: #a77b16;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.detalhe-secao-cabecalho h2 {
+  margin: 0;
+  color: #171717;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.detalhe-media-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.detalhe-media-box > strong {
+  color: #171717;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.detalhe-media-box > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detalhe-media-box .detalhe-estrelas {
+  font-size: 17px;
+}
+
+.detalhe-media-box > div > span:last-child {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.detalhe-avaliacoes-conteudo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap: 40px;
+  padding-top: 30px;
+}
+
+.detalhe-comentarios h3 {
+  margin-bottom: 25px;
+  color: #222;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.detalhe-comentario {
+  padding: 0 0 25px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eeeae1;
+}
+
+.detalhe-comentario-topo {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.detalhe-comentario-topo strong {
+  color: #222;
+  font-size: 0.95rem;
+}
+
+.detalhe-comentario-topo time {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.detalhe-comentario .detalhe-estrelas {
+  font-size: 18px;
+}
+
+.detalhe-comentario p {
+  margin: 12px 0 0;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.detalhe-sem-avaliacoes {
+  padding: 25px;
+  border-radius: 10px;
+  background: #f8f7f3;
+}
+
+.detalhe-sem-avaliacoes p {
+  margin: 0;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.detalhe-formulario-area {
+  min-width: 0;
+}
+
+/* ESTADOS */
+
+.detalhe-carregando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #b58a25;
+}
+
+.detalhe-erro {
+  padding: 65px 20px;
+  border: 1px solid #e9e5da;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.detalhe-erro h2 {
+  color: #171717;
+  font-weight: 800;
+}
+
+.detalhe-erro p {
+  color: #777;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 991px) {
+  .detalhe-avaliacoes-conteudo {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .detalhe-page {
+    padding: 30px 0 60px;
+  }
+
+  .detalhe-produto,
+  .detalhe-avaliacoes {
+    padding: 20px;
+  }
+
+  .detalhe-imagem-box {
+    min-height: 280px;
+    padding: 20px;
+  }
+
+  .detalhe-imagem-box img {
+    max-height: 260px;
+  }
+
+  .detalhe-info {
+    padding: 0;
+  }
+
+  .detalhe-secao-cabecalho h2 {
+    font-size: 1.3rem;
+  }
+
+  .detalhe-avaliacoes-conteudo {
+    gap: 25px;
+  }
+}

@@ -1,18 +1,17 @@
+
 import { useState, type SyntheticEvent } from "react";
+import { toast } from "react-toastify";
 import { validarCPF } from "../utils/validarCPF";
 import "./Cadastro.css";
 
 function Cadastro() {
     const [senha, setSenha] = useState("");
     const [confirmarSenha, setConfirmarSenha] = useState("");
-    const [mensagem, setMensagem] = useState("");
-
     const [mostrarSenha, setMostrarSenha] = useState(false);
     const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
-
     const [cpf, setCpf] = useState("");
     const [telefone, setTelefone] = useState("");
-
+    const [carregando, setCarregando] = useState(false);
 
     function formatarCPF(valor: string) {
         const numeros = valor.replace(/\D/g, "").slice(0, 11);
@@ -42,68 +41,100 @@ function Cadastro() {
         return regex.test(email);
     }
 
+    function validarSenhaForte(valor: string): boolean {
+        return (
+            valor.length >= 8 &&
+            /[A-Z]/.test(valor) &&
+            /[a-z]/.test(valor) &&
+            /[0-9]/.test(valor) &&
+            /[^A-Za-z0-9]/.test(valor)
+        );
+    }
+
     async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
         event.preventDefault();
+
+        if (carregando) return;
 
         const formulario = new FormData(event.currentTarget);
 
         const nome = String(formulario.get("nome") ?? "").trim();
         const email = String(formulario.get("email") ?? "").trim();
 
-        if (!validarCPF(cpf)) {
-            setMensagem("CPF inválido. Verifique os números informados.");
+        if (!nome) {
+            toast.warning("Informe seu nome completo.");
+            return;
+        }
+
+        if (!validarCPF(cpf.replace(/\D/g, ""))) {
+            toast.warning("CPF inválido. Verifique os números informados.");
             return;
         }
 
         if (!validarEmail(email)) {
-            setMensagem("E-mail inválido. Informe um endereço de e-mail válido.");
+            toast.warning("Informe um endereço de e-mail válido.");
+            return;
+        }
+
+        const telefoneLimpo = telefone.replace(/\D/g, "");
+
+        if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
+            toast.warning("Informe um telefone válido com DDD.");
+            return;
+        }
+
+        if (!validarSenhaForte(senha)) {
+            toast.warning(
+                "A senha deve ter no mínimo 8 caracteres, letra maiúscula, minúscula, número e símbolo."
+            );
             return;
         }
 
         if (senha !== confirmarSenha) {
-            setMensagem("As senhas não são iguais. Verifique e tente novamente.");
+            toast.warning("As senhas não coincidem. Verifique e tente novamente.");
             return;
         }
-
-        setMensagem("Cadastrando...");
 
         const dados = {
             nome,
             email,
             cpf: cpf.replace(/\D/g, ""),
-            telefone: telefone.replace(/\D/g, ""),
-            senha,
+            telefone: telefoneLimpo,
+            senha
         };
+
+        setCarregando(true);
 
         try {
             const resposta = await fetch("/api/usuarios", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify(dados),
+                body: JSON.stringify(dados)
             });
 
             const resultado = await resposta.json();
 
             if (!resposta.ok) {
-                throw new Error(
+                toast.error(
                     resultado.mensagem || "Não foi possível realizar o cadastro."
                 );
+                return;
             }
 
-            setMensagem("Cadastro realizado com sucesso!");
+            sessionStorage.setItem(
+                "toastPendente",
+                "Cadastro realizado com sucesso! Faça login para continuar."
+            );
 
-            setTimeout(() => {
-                window.location.assign("/login");
-            }, 1000);
-
+            window.location.assign("/login");
         } catch (erro) {
-            if (erro instanceof Error) {
-                setMensagem(erro.message);
-            } else {
-                setMensagem("Erro ao conectar com o servidor.");
-            }
+            console.error("Erro ao cadastrar usuário:", erro);
+
+            toast.error("Erro ao conectar com o servidor. Tente novamente.");
+        } finally {
+            setCarregando(false);
         }
     }
 
@@ -121,6 +152,7 @@ function Cadastro() {
                             id="nome"
                             name="nome"
                             placeholder="Digite seu nome completo"
+                            disabled={carregando}
                             required
                         />
                     </div>
@@ -132,6 +164,7 @@ function Cadastro() {
                             id="email"
                             name="email"
                             placeholder="Digite seu e-mail"
+                            disabled={carregando}
                             required
                         />
                     </div>
@@ -148,6 +181,7 @@ function Cadastro() {
                                 setCpf(formatarCPF(event.target.value))
                             }
                             maxLength={14}
+                            disabled={carregando}
                             required
                         />
                     </div>
@@ -164,6 +198,7 @@ function Cadastro() {
                                 setTelefone(formatarTelefone(event.target.value))
                             }
                             maxLength={15}
+                            disabled={carregando}
                             required
                         />
                     </div>
@@ -179,6 +214,7 @@ function Cadastro() {
                                 placeholder="Crie uma senha"
                                 value={senha}
                                 onChange={(event) => setSenha(event.target.value)}
+                                disabled={carregando}
                                 required
                             />
 
@@ -186,9 +222,8 @@ function Cadastro() {
                                 type="button"
                                 className="btn-mostrar-senha"
                                 onClick={() => setMostrarSenha(!mostrarSenha)}
-                                aria-label={
-                                    mostrarSenha ? "Ocultar senha" : "Mostrar senha"
-                                }
+                                disabled={carregando}
+                                aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
                             >
                                 <i
                                     className={`bi ${mostrarSenha ? "bi-eye-slash" : "bi-eye"
@@ -211,6 +246,7 @@ function Cadastro() {
                                 onChange={(event) =>
                                     setConfirmarSenha(event.target.value)
                                 }
+                                disabled={carregando}
                                 required
                             />
 
@@ -220,6 +256,7 @@ function Cadastro() {
                                 onClick={() =>
                                     setMostrarConfirmarSenha(!mostrarConfirmarSenha)
                                 }
+                                disabled={carregando}
                                 aria-label={
                                     mostrarConfirmarSenha
                                         ? "Ocultar confirmação de senha"
@@ -227,22 +264,16 @@ function Cadastro() {
                                 }
                             >
                                 <i
-                                    className={`bi ${mostrarConfirmarSenha
-                                        ? "bi-eye-slash"
-                                        : "bi-eye"
+                                    className={`bi ${mostrarConfirmarSenha ? "bi-eye-slash" : "bi-eye"
                                         }`}
                                 ></i>
                             </button>
                         </div>
                     </div>
 
-                    {mensagem && (
-                        <p className="mensagem-cadastro" role="status">
-                            {mensagem}
-                        </p>
-                    )}
-
-                    <button type="submit">Cadastrar</button>
+                    <button type="submit" disabled={carregando}>
+                        {carregando ? "Cadastrando..." : "Cadastrar"}
+                    </button>
                 </form>
 
                 <p className="login-link">

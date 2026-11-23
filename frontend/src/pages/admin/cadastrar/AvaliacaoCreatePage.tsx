@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
@@ -17,7 +18,6 @@ export function AvaliacaoCreatePage() {
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState("");
 
   useEffect(() => {
     let ativo = true;
@@ -54,8 +54,6 @@ export function AvaliacaoCreatePage() {
   ) {
     event.preventDefault();
 
-    setErro("");
-    setMensagem("");
 
     const produtoSelecionado = Number(idProduto);
 
@@ -63,19 +61,19 @@ export function AvaliacaoCreatePage() {
       !Number.isInteger(produtoSelecionado) ||
       produtoSelecionado <= 0
     ) {
-      setErro("Selecione um produto válido.");
+      toast.warning("Selecione um produto válido.");
       return;
     }
 
     if (!Number.isInteger(nota) || nota < 1 || nota > 5) {
-      setErro("Selecione uma nota entre 1 e 5.");
+      toast.warning("Selecione uma nota entre 1 e 5.");
       return;
     }
 
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setErro("Você precisa estar logado para cadastrar avaliações.");
+      toast.warning("Você precisa estar logado para cadastrar avaliações.");
       return;
     }
 
@@ -96,7 +94,7 @@ export function AvaliacaoCreatePage() {
         }
       );
 
-      setMensagem("Avaliação cadastrada com sucesso!");
+      toast.success("Avaliação cadastrada com sucesso!");
 
       setIdProduto("");
       setNota(5);
@@ -110,7 +108,7 @@ export function AvaliacaoCreatePage() {
           "Não foi possível cadastrar a avaliação."
         );
       } else {
-        setErro("Ocorreu um erro inesperado.");
+        toast.error("Ocorreu um erro inesperado.");
       }
     } finally {
       setSalvando(false);
@@ -133,13 +131,7 @@ export function AvaliacaoCreatePage() {
         <div className="alert alert-danger">
           {erro}
         </div>
-      )}
-
-      {mensagem && (
-        <div className="alert alert-success">
-          {mensagem}
-        </div>
-      )}
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

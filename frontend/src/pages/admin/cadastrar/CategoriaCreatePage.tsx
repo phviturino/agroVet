@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useState, type FormEvent } from "react";
 import { api } from "../../../api/axios";
 
@@ -19,13 +20,13 @@ export function CategoriaCreatePage() {
     setLoading(true);
     try {
       await api.post("/categorias", form);
-      alert("Categoria cadastrada com sucesso!");
+      toast.success("Categoria cadastrada com sucesso!");
       setForm({
         nome: "",
         descricao: "",
       });
     } catch (error) {
-      alert("Erro ao cadastrar categoria!");
+      toast.error("Erro ao cadastrar categoria!");
     } finally {
       setLoading(false);
     }

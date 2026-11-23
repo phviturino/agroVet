@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
@@ -48,7 +49,7 @@ export function CategoriaListPage({ onEdit }: Props) {
       );
     } catch (err) {
       console.error("Erro ao carregar categorias:", err);
-      alert("Erro ao carregar lista de categorias.");
+      toast.error("Erro ao carregar lista de categorias.");
     } finally {
       setLoading(false);
     }
@@ -66,12 +67,12 @@ export function CategoriaListPage({ onEdit }: Props) {
     try {
       await api.delete(`/categorias/${id}`);
 
-      alert("Categoria excluída com sucesso!");
+      toast.success("Categoria excluída com sucesso!");
 
       await carregarCategorias();
     } catch (err) {
       console.error("Erro ao excluir categoria:", err);
-      alert("Erro ao excluir a categoria.");
+      toast.error("Erro ao excluir a categoria.");
     }
   }
 

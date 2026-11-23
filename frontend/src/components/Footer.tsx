@@ -1,4 +1,5 @@
-import React from 'react';
+
+import "./Footer.css";
 
 interface Loja {
   cidade: string;
@@ -29,90 +30,132 @@ const LOJAS: Loja[] = [
   }
 ];
 
-export const Footer: React.FC = () => {
+export default function Footer() {
   return (
-    <footer className="bg-dark text-white pt-5 pb-3">
+    <footer className="agro-footer">
       <div className="container">
 
-        <div className="row align-items-center mb-3">
-          <div className="col-md-3">
-            <img
-              src="/img/lojaicone.jpeg"
-              alt="Saúde Animal Agro e Vet"
-              className="logo-footer rounded-circle w-100"
-            />
-          </div>
+        <div className="agro-footer-topo">
+          <div className="agro-footer-identidade">
+            <a href="/" aria-label="Voltar ao início">
+              <img
+                src="/img/lojaicone.jpeg"
+                alt="Saúde Animal Agro e Vet"
+                className="agro-footer-logo"
+              />
+            </a>
 
-          <div className="col-md-9">
-            <p className="text-secondary ms-3">
-              Sua loja completa, dedicada ao cuidado, desde o seu pet até
-              sua fazenda. 4 lojas oferecendo o melhor a nossos clientes.
-            </p>
-          </div>
-        </div>
+            <div>
+              <span className="agro-footer-etiqueta">
+                SAÚDE ANIMAL AGRO & VET
+              </span>
 
-        <hr className="border-secondary" />
+              <h2>Cuidando de quem importa.</h2>
 
-        {/* Lista das 4 Lojas */}
-        <div className="row py-4">
-          {LOJAS.map((loja, index) => (
-            <div key={index} className="col-12 col-md-6 mb-4">
-              <div className="footer-loja">
-                <h6 className="text-warning text-uppercase fw-bold">
-                  {loja.cidade}
-                </h6>
-                <p className="text-secondary small">{loja.endereco}</p>
-                <a
-                  href={`https://api.whatsapp.com/send?phone=${loja.whatsapp}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-success text-decoration-none"
-                >
-                  <i className="bi bi-whatsapp"></i> Whatsapp
-                </a>
-              </div>
+              <p>
+                Do seu pet à sua fazenda, oferecemos
+                produtos e atendimento para quem cuida
+                dos animais e trabalha no campo.
+              </p>
             </div>
-          ))}
+          </div>
 
-          <div className="footer-contato py-3 d-flex flex-wrap gap-3">
+          <div className="agro-footer-redes">
+            <span className="agro-footer-etiqueta">
+              FALE COM A GENTE
+            </span>
+
             <a
               href="https://www.instagram.com/saudeanimalagroevet/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-decoration-none text-white me-3"
             >
-              <i className="bi bi-instagram fs-5 me-2 text-center"></i>
-              @saudeanimalagroevet
+              <i className="bi bi-instagram" aria-hidden="true"></i>
+              <span>Instagram</span>
             </a>
 
-            <a
-              href="mailto:saudeanimalagroevet@outlook.com.br"
-              className="text-decoration-none text-white"
-            >
-              <i className="bi bi-envelope fs-5 me-2 text-center"></i>
-              saudeanimalagroevet@outlook.com.br
+            <a href="mailto:saudeanimalagroevet@outlook.com.br">
+              <i className="bi bi-envelope" aria-hidden="true"></i>
+              <span>E-mail</span>
             </a>
           </div>
         </div>
 
-        <hr className="border-secondary" />
+        <div className="agro-footer-divisor" />
 
-        <div className="footer-redes py-3">
-          <p className="text-secondary small mb-0 text-center">
-            ©2026 Saúde Animal Agro e Vet - Todos os direitos reservados
-          </p>
+        <div className="agro-footer-lojas-topo">
+          <div>
+            <span className="agro-footer-etiqueta">
+              ONDE ESTAMOS
+            </span>
+            <h3>Encontre uma de nossas lojas</h3>
+          </div>
+
+          <span className="agro-footer-total">
+            04 unidades
+          </span>
         </div>
 
-        <div className="text-center mt-4">
+        <div className="agro-footer-lojas">
+          {LOJAS.map((loja) => (
+            <article
+              key={loja.cidade}
+              className="agro-footer-loja"
+            >
+              <div className="agro-footer-loja-icone">
+                <i
+                  className="bi bi-geo-alt"
+                  aria-hidden="true"
+                ></i>
+              </div>
+
+              <h4>{loja.cidade}</h4>
+
+              <p>{loja.endereco}</p>
+
+              <a
+                href={`https://api.whatsapp.com/send?phone=${loja.whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="agro-footer-whatsapp"
+                aria-label={`Conversar com a loja de ${loja.cidade} pelo WhatsApp`}
+              >
+                <i
+                  className="bi bi-whatsapp"
+                  aria-hidden="true"
+                ></i>
+                Falar com a loja
+                <i
+                  className="bi bi-arrow-up-right"
+                  aria-hidden="true"
+                ></i>
+              </a>
+            </article>
+          ))}
+        </div>
+
+        <div className="agro-footer-divisor" />
+
+        <div className="agro-footer-inferior">
+          <p>
+            © {new Date().getFullYear()} Saúde Animal Agro e Vet.
+            Todos os direitos reservados.
+          </p>
+
+          <div className="agro-footer-links">
+            <a href="/">Início</a>
+            <a href="/produtos">Produtos</a>
+            <a href="/contato">Contato</a>
+          </div>
+        </div>
+
+        <div className="agro-footer-imagem-final">
           <img
             src="/img/img-footer.png"
-            className="img-footer"
             alt="Saúde Animal"
           />
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

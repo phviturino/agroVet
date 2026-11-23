@@ -1,16 +1,14 @@
-
 import { useState } from "react";
+import "./FormularioAvaliacao.css";
 
 interface FormularioAvaliacaoProps {
   onEnviar: (nota: number, comentario: string) => Promise<boolean>;
   enviando: boolean;
-  mensagem: string;
 }
 
 export default function FormularioAvaliacao({
   onEnviar,
-  enviando,
-  mensagem
+  enviando
 }: FormularioAvaliacaoProps) {
   const [notaSelecionada, setNotaSelecionada] = useState(0);
   const [comentario, setComentario] = useState("");
@@ -25,71 +23,76 @@ export default function FormularioAvaliacao({
   };
 
   return (
-    <div className="mt-3">
-      <h4 className="fw-bold mb-3">Deixe sua avaliação</h4>
+    <div className="form-avaliacao">
+      <span className="form-avaliacao-etiqueta">
+        SUA OPINIÃO IMPORTA
+      </span>
 
-      <p className="mb-2">Sua nota:</p>
+      <h3 className="form-avaliacao-titulo">
+        Deixe sua avaliação
+      </h3>
 
-      <div className="d-flex gap-2 mb-3">
-        {[1, 2, 3, 4, 5].map((estrela) => (
-          <button
-            key={estrela}
-            type="button"
-            className="btn border-0 p-0"
-            onClick={() => setNotaSelecionada(estrela)}
-            aria-label={`Avaliar com ${estrela} estrelas`}
-            aria-pressed={notaSelecionada === estrela}
-            style={{
-              color:
-                estrela <= notaSelecionada
-                  ? "#FF9B36"
-                  : "#6c757d",
-              fontSize: "30px",
-              lineHeight: 1
-            }}
-          >
-            ★
-          </button>
-        ))}
+      <p className="form-avaliacao-descricao">
+        Compartilhe sua experiência com este produto.
+      </p>
+
+      <div className="mb-4">
+        <p className="form-avaliacao-label">Sua nota:</p>
+
+        <div
+          className="form-avaliacao-estrelas"
+          role="group"
+          aria-label="Selecione sua nota"
+        >
+          {[1, 2, 3, 4, 5].map((estrela) => (
+            <button
+              key={estrela}
+              type="button"
+              className={`form-avaliacao-estrela ${
+                estrela <= notaSelecionada ? "selecionada" : ""
+              }`}
+              onClick={() => setNotaSelecionada(estrela)}
+              aria-label={`Avaliar com ${estrela} estrelas`}
+              aria-pressed={notaSelecionada === estrela}
+              disabled={enviando}
+            >
+              ★
+            </button>
+          ))}
+        </div>
       </div>
 
       <label
         htmlFor="comentario-avaliacao"
-        className="form-label fw-bold"
+        className="form-avaliacao-label"
       >
         Seu comentário:
       </label>
 
       <textarea
         id="comentario-avaliacao"
-        className="form-control bg-dark text-white"
-        rows={3}
+        className="form-control form-avaliacao-textarea"
+        rows={4}
         placeholder="Conte sua experiência com este produto..."
         value={comentario}
         onChange={(e) => setComentario(e.target.value)}
         maxLength={500}
+        disabled={enviando}
       />
 
-      <small className="text-white-50">
+      <div className="form-avaliacao-contador">
         {comentario.length}/500 caracteres
-      </small>
-
-      <div className="mt-3">
-        <button
-          type="button"
-          className="btn btn-success fw-bold"
-          onClick={enviar}
-          disabled={enviando}
-        >
-          {enviando ? "Enviando..." : "Enviar avaliação"}
-        </button>
       </div>
 
-      {mensagem && (
-        <p className="mt-3 mb-0" role="status">
-          {mensagem}
-        </p>
-      )}
+      <button
+        type="button"
+        className="form-avaliacao-enviar"
+        onClick={enviar}
+        disabled={enviando}
+      >
+        {enviando ? "Enviando..." : "Enviar avaliação"}
+        {!enviando && <span aria-hidden="true">→</span>}
+      </button>
     </div>
   );
 }

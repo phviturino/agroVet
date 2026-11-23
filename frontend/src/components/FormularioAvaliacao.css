@@ -1,0 +1,159 @@
+
+/* FORMULÁRIO DE AVALIAÇÃO - AGROVET */
+
+.form-avaliacao {
+  padding: 28px;
+  border: 1px solid #e9e5da;
+  border-radius: 12px;
+  background: #f8f7f3;
+}
+
+.form-avaliacao-etiqueta {
+  display: block;
+  margin-bottom: 10px;
+  color: #a77b16;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.form-avaliacao-titulo {
+  margin-bottom: 10px;
+  color: #171717;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.form-avaliacao-descricao {
+  margin-bottom: 25px;
+  color: #777;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.form-avaliacao-label {
+  display: block;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* ESTRELAS */
+
+.form-avaliacao-estrelas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.form-avaliacao-estrela {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #c9c9c9;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.form-avaliacao-estrela.selecionada {
+  color: #ff9b36;
+}
+
+.form-avaliacao-estrela:hover {
+  color: #ff9b36;
+  transform: scale(1.15);
+}
+
+.form-avaliacao-estrela:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-avaliacao-estrela:focus-visible,
+.form-avaliacao-enviar:focus-visible {
+  outline: 3px solid #b58a25;
+  outline-offset: 4px;
+}
+
+/* COMENTÁRIO */
+
+.form-avaliacao-textarea {
+  padding: 13px;
+  border: 1px solid #dedbd2;
+  border-radius: 8px;
+  background: #fff;
+  color: #222;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+.form-avaliacao-textarea:focus {
+  border-color: #b58a25;
+  background: #fff;
+  color: #222;
+  box-shadow: 0 0 0 3px rgba(181, 138, 37, 0.12);
+}
+
+.form-avaliacao-textarea::placeholder {
+  color: #999;
+}
+
+.form-avaliacao-contador {
+  margin-top: 8px;
+  color: #999;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+/* BOTÃO */
+
+.form-avaliacao-enviar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #171717;
+  color: #e5bd54;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.form-avaliacao-enviar:hover:not(:disabled) {
+  background: #b58a25;
+  color: #171717;
+}
+
+.form-avaliacao-enviar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-avaliacao-mensagem {
+  margin: 15px 0 0;
+  color: #555;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 768px) {
+  .form-avaliacao {
+    padding: 20px;
+  }
+
+  .form-avaliacao-estrela {
+    font-size: 30px;
+  }
+}

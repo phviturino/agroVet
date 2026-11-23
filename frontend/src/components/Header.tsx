@@ -1,143 +1,139 @@
-import React, { useState } from "react";
+
+import { useState, type FormEvent } from "react";
 import "./Header.css";
+
 interface HeaderProps {
   mostrarCatalogo?: boolean;
 }
 
-export default function Header({ mostrarCatalogo = false }: HeaderProps) {
+export default function Header({
+  mostrarCatalogo = false
+}: HeaderProps) {
   const [busca, setBusca] = useState("");
-
   const estaLogado = Boolean(localStorage.getItem("token"));
 
-  function handleBusca(event: React.FormEvent<HTMLFormElement>) {
+  function handleBusca(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const termo = busca.trim();
 
-    if (!termo) {
-      window.location.href = "/produtos";
-      return;
-    }
-
-    window.location.href = `/produtos?busca=${encodeURIComponent(termo)}`;
+    window.location.href = termo
+      ? `/produtos?busca=${encodeURIComponent(termo)}`
+      : "/produtos";
   }
 
   return (
-    <header>
-      <nav className="navbar-dark py-3">
-        <div className="container-fluid px-3">
+    <header className="agro-header">
+      <div className="container">
+        <div className="agro-header-conteudo">
 
-          <div className="d-flex justify-content-center mb-3 d-md-none">
-            <a className="logo" href="/">
-              <img
-                src="/img/lojaicone.jpeg"
-                alt="Saúde Animal Agro e Vet"
-                className="logo-img-mobile"
-              />
-            </a>
-          </div>
+          <a
+            href="/"
+            className="agro-header-marca"
+            aria-label="Ir para a página inicial"
+          >
+            <img
+              src="/img/lojaicone.jpeg"
+              alt="Saúde Animal Agro e Vet"
+              className="agro-header-logo"
+            />
 
-          <div className="row align-items-center d-none d-md-flex">
-            <div className="col-md-3">
-              <a className="logo" href="/">
-                <img
-                  src="/img/lojaicone.jpeg"
-                  alt="Saúde Animal Agro e Vet"
-                  className="logo-img"
-                />
+            <div className="agro-header-marca-texto">
+              <strong>SAÚDE ANIMAL</strong>
+              <span>AGRO & VET</span>
+            </div>
+          </a>
+
+          <form
+            className="agro-header-busca"
+            onSubmit={handleBusca}
+            role="search"
+          >
+            <i
+              className="bi bi-search agro-header-busca-icone"
+              aria-hidden="true"
+            ></i>
+
+            <input
+              type="search"
+              name="busca"
+              placeholder="O que você está procurando?"
+              aria-label="Buscar produtos"
+              value={busca}
+              onChange={(event) => setBusca(event.target.value)}
+            />
+
+            <button type="submit">
+              Buscar
+            </button>
+          </form>
+
+          <div className="agro-header-acoes">
+            {estaLogado ? (
+              <a
+                href="/perfil"
+                className="agro-header-conta"
+                title="Meu perfil"
+              >
+                <i
+                  className="bi bi-person-circle"
+                  aria-hidden="true"
+                ></i>
+                <span>Minha conta</span>
               </a>
-            </div>
-
-            <div className="col-md-6">
-              <form
-                onSubmit={handleBusca}
-                className="d-flex busca"
-                role="search"
+            ) : (
+              <a
+                href="/cadastro"
+                className="agro-header-conta"
+                title="Criar conta"
               >
-                <input
-                  className="form-control me-2 w-100"
-                  type="search"
-                  name="busca"
-                  placeholder="Buscar"
-                  aria-label="Buscar produtos"
-                  value={busca}
-                  onChange={(event) => setBusca(event.target.value)}
-                />
-
-                <button
-                  className="btn btn-outline-success"
-                  type="submit"
-                  aria-label="Pesquisar"
-                >
-                  <i className="bi bi-search"></i>
-                </button>
-              </form>
-            </div>
-
-
-            <div className="col-md-3 d-flex align-items-center justify-content-end">
-              {estaLogado ? (
-                <a
-                  href="/perfil"
-                  className="btn btn-outline-success rounded-circle d-flex align-items-center justify-content-center"
-                  style={{ width: "45px", height: "45px" }}
-                  title="Meu Perfil"
-                  aria-label="Meu Perfil"
-                >
-                  <i className="bi bi-person-fill fs-5"></i>
-                </a>
-              ) : (
-                <a href="/cadastro" className="btn btn-outline-success">
-                  <i className="bi bi-person-circle me-2"></i>
-                  Cadastro
-                </a>
-              )}
-            </div>
-
-
+                <i
+                  className="bi bi-person-circle"
+                  aria-hidden="true"
+                ></i>
+                <span>Criar conta</span>
+              </a>
+            )}
           </div>
 
-          <div className="d-md-none d-flex align-items-center">
-            <form
-              onSubmit={handleBusca}
-              className="d-flex flex-grow-1"
-              role="search"
-            >
-              <input
-                className="form-control me-2"
-                type="search"
-                name="busca"
-                placeholder="Buscar Produto"
-                aria-label="Buscar produtos"
-                value={busca}
-                onChange={(event) => setBusca(event.target.value)}
-              />
+        </div>
+      </div>
 
-              <button
-                className="btn btn-outline-success px-3"
-                type="submit"
-                aria-label="Pesquisar"
-              >
-                <i className="bi bi-search"></i>
-              </button>
-            </form>
+      <nav className="agro-header-navegacao" aria-label="Navegação principal">
+        <div className="container">
+          <div className="agro-header-links">
+            <a href="/">
+              <i className="bi bi-house-door" aria-hidden="true"></i>
+              Início
+            </a>
 
+            <a href="/produtos">
+              <i className="bi bi-grid" aria-hidden="true"></i>
+              Produtos
+            </a>
+
+            <a href="/contato">
+              <i className="bi bi-chat-dots" aria-hidden="true"></i>
+              Contato
+            </a>
+
+            {!estaLogado && (
+              <a href="/login">
+                <i className="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                Entrar
+              </a>
+            )}
           </div>
         </div>
       </nav>
 
       {mostrarCatalogo && (
-        <div className="menu-nav text-center mb-3">
-          <div className="mb-3">
-            <a
-              href="/produtos"
-              className="btn btn-warning btn-lg fw-bold px-5 py-3 text-dark text-uppercase rounded-pill shadow-lg btn-banner-home"
-            >
-              🛒 VEJA NOSSO CATÁLOGO
-            </a>
-          </div>
-
-          <hr className="w-50 mx-auto my-3 text-secondary" />
+        <div className="agro-header-catalogo">
+          <a href="/produtos" className="agro-header-catalogo-btn">
+            <i className="bi bi-bag-check" aria-hidden="true"></i>
+            Explore nosso catálogo
+            <i className="bi bi-arrow-right" aria-hidden="true"></i>
+          </a>
         </div>
       )}
     </header>

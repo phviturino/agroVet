@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useState, useEffect, type FormEvent } from "react";
 import { api } from "../../../api/axios";
 
@@ -19,7 +20,7 @@ export function CategoriaEditPage({ categoriaId, onSuccess }: Props) {
           descricao: res.data.descricao || "",
         });
       } catch (err) {
-        alert("Erro ao carregar dados da categoria.");
+        toast.error("Erro ao carregar dados da categoria.");
       }
     }
     carregar();
@@ -30,7 +31,7 @@ export function CategoriaEditPage({ categoriaId, onSuccess }: Props) {
     setLoading(true);
     try {
       await api.put(`/categorias/${categoriaId}`, form);
-      alert("Categoria atualizada com sucesso!");
+      toast.success("Categoria atualizada com sucesso!");
       onSuccess();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -39,7 +40,7 @@ export function CategoriaEditPage({ categoriaId, onSuccess }: Props) {
         console.error("Erro desconhecido:", err);
       }
 
-      alert("Erro ao salvar as alterações da categoria.");
+      toast.error("Erro ao salvar as alterações da categoria.");
     } finally {
       setLoading(false);
     }

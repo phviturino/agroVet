@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useState, useEffect, type FormEvent } from "react";
 import { api } from "../../../api/axios";
 
@@ -30,7 +31,7 @@ export function ProdutoEditPage({ produtoId, onSuccess }: Props) {
           descricao: response.data.descricao || "",
         });
       } catch (err) {
-        alert("Erro ao carregar os dados do produto.");
+        toast.error("Erro ao carregar os dados do produto.");
       }
     }
     carregarProduto();
@@ -51,14 +52,12 @@ export function ProdutoEditPage({ produtoId, onSuccess }: Props) {
       };
 
       await api.put(`/produtos/${produtoId}`, dadosParaEnviar);
-      alert("Produto atualizado com sucesso!");
+      toast.success("Produto atualizado com sucesso!");
       onSuccess();
     } catch (err: unknown) {
       console.error("Erro ao atualizar produto:", err);
 
-      alert(
-        "Erro ao salvar as alterações do produto. Verifique se a rota PUT existe no backend."
-      );
+      toast.error("Erro ao salvar as alterações do produto. Verifique se a rota PUT existe no backend.");
     } finally {
       setLoading(false);
     }

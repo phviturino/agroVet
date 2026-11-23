@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
 import Paginacao from "../../../components/Paginacao";
@@ -49,7 +50,7 @@ export function ProdutoListPage({ onEdit }: Props) {
       );
     } catch (err) {
       console.error("Erro ao carregar produtos:", err);
-      alert("Erro ao carregar lista de produtos.");
+      toast.error("Erro ao carregar lista de produtos.");
     } finally {
       setLoading(false);
     }
@@ -67,12 +68,12 @@ export function ProdutoListPage({ onEdit }: Props) {
     try {
       await api.delete(`/produtos/${id}`);
 
-      alert("Produto excluído com sucesso!");
+      toast.success("Produto excluído com sucesso!");
 
       await carregarProdutos();
     } catch (err) {
       console.error("Erro ao excluir produto:", err);
-      alert("Erro ao excluir o produto.");
+      toast.error("Erro ao excluir o produto.");
     }
   }
 

@@ -10,8 +10,23 @@ import Cadastro from './pages/Cadastro';
 import Login from "./pages/Login";
 import Perfil from "./pages/Perfil";
 import AdminRoute from './components/AdminRoute';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
+
+  const notificacoes = (
+    <ToastContainer
+      position="top-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop
+      closeOnClick
+      pauseOnHover
+      theme="light"
+      limit={3}
+    />
+  );
 
   const path = window.location.pathname;
 
@@ -46,9 +61,13 @@ export default function App() {
 
   if (path === '/admin') {
     return (
+      <>
       <AdminRoute>
         <AdminIndex />
       </AdminRoute>
+
+      {notificacoes}
+      </>
     );
   }
 
@@ -63,6 +82,8 @@ export default function App() {
       <WhatsAppFloat />
 
       <Footer />
+
+      {notificacoes}
     </div>
   );
 }

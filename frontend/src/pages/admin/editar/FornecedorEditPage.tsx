@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useState, useEffect, type FormEvent } from "react";
 import { api } from "../../../api/axios";
 import axios from "axios";
@@ -27,7 +28,7 @@ export function FornecedorEditPage({ fornecedorId, onSuccess }: Props) {
           email: res.data.email || "",
         });
       } catch (err) {
-        alert("Erro ao carregar dados do fornecedor.");
+        toast.error("Erro ao carregar dados do fornecedor.");
       }
     }
     carregar();
@@ -38,7 +39,7 @@ export function FornecedorEditPage({ fornecedorId, onSuccess }: Props) {
     setLoading(true);
     try {
       await api.put(`/fornecedores/${fornecedorId}`, form);
-      alert("Fornecedor atualizado com sucesso!");
+      toast.success("Fornecedor atualizado com sucesso!");
       onSuccess();
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -50,7 +51,7 @@ export function FornecedorEditPage({ fornecedorId, onSuccess }: Props) {
         console.error("Erro desconhecido:", err);
       }
 
-      alert("Erro ao salvar as alterações do fornecedor.");
+      toast.error("Erro ao salvar as alterações do fornecedor.");
     } finally {
       setLoading(false);
     }

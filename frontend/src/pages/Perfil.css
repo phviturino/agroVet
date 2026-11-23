@@ -1,0 +1,165 @@
+/* Perfil AgroVet: Bootstrap para grid e campos, CSS para identidade visual */
+.perfil-pagina {
+    background: #f6f6f3;
+    min-height: 75vh;
+    padding: 55px 0 85px;
+    color: #222;
+}
+
+.perfil-container {
+    max-width: 960px;
+}
+
+.perfil-cabecalho {
+    margin-bottom: 28px;
+}
+
+.perfil-etiqueta {
+    display: block;
+    color: #a77b16;
+    font-size: .76rem;
+    letter-spacing: 1.7px;
+    font-weight: 800;
+    margin-bottom: 9px;
+}
+
+.perfil-cabecalho h1 {
+    color: #171717;
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.perfil-cabecalho p {
+    color: #777;
+    margin: 0;
+}
+
+.perfil-card {
+    border: 1px solid #e9e5da;
+    border-radius: 16px;
+    box-shadow: 0 7px 30px rgba(0, 0, 0, .045);
+    overflow: hidden;
+}
+
+.perfil-card-conteudo {
+    padding: 34px;
+}
+
+.perfil-dado {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 15px;
+    padding: 19px 0;
+    border-bottom: 1px solid #eeeae1;
+    margin: 0;
+}
+
+.perfil-dado strong {
+    color: #777;
+    font-size: .87rem;
+    font-weight: 700;
+}
+
+.perfil-dado span {
+    color: #222;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.perfil-acoes {
+    margin-top: 30px;
+}
+
+.perfil-botao-principal {
+    background: #171717;
+    color: #e5bd54;
+    border: 1px solid #171717;
+    font-weight: 750;
+    padding: 11px 22px;
+}
+
+.perfil-botao-principal:hover,
+.perfil-botao-principal:focus-visible {
+    background: #987018;
+    border-color: #987018;
+    color: white;
+}
+
+.perfil-botao-sair {
+    background: white;
+    color: #a43b3b;
+    border: 1px solid #d8b3b3;
+    font-weight: 700;
+    padding: 11px 22px;
+}
+
+.perfil-botao-sair:hover {
+    background: #a43b3b;
+    border-color: #a43b3b;
+    color: white;
+}
+
+.perfil-botao-secundario {
+    background: #f0eee9;
+    color: #333;
+    border: 1px solid #ddd8cd;
+    font-weight: 700;
+    padding: 11px 22px;
+}
+
+.perfil-botao-secundario:hover {
+    background: #e6e0d5;
+    color: #171717;
+}
+
+.perfil-formulario .form-label {
+    color: #333;
+    font-weight: 700;
+    font-size: .9rem;
+}
+
+.perfil-formulario .form-control {
+    border-color: #dedbd2;
+    border-radius: 8px;
+    padding: 11px 13px;
+}
+
+.perfil-formulario .form-control:focus {
+    border-color: #b58a25;
+    box-shadow: 0 0 0 3px rgba(181, 138, 37, .14);
+}
+
+.perfil-formulario h5 {
+    font-weight: 800;
+    color: #222;
+    margin: 24px 0;
+}
+
+.perfil-formulario hr {
+    border-color: #e9e5da;
+    margin: 25px 0;
+}
+
+.perfil-estado {
+    min-height: 300px;
+}
+
+@media (max-width:575px) {
+    .perfil-pagina {
+        padding: 30px 0 55px;
+    }
+
+    .perfil-card-conteudo {
+        padding: 21px;
+    }
+
+    .perfil-dado {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .perfil-acoes .btn {
+        flex: 1;
+    }
+}

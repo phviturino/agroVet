@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useState, type FormEvent } from "react";
 import { api } from "../../../api/axios";
 
@@ -23,7 +24,7 @@ export function FornecedorCreatePage() {
 
     try {
       await api.post("/fornecedores", form);
-      alert("Fornecedor cadastrado com sucesso!");
+      toast.success("Fornecedor cadastrado com sucesso!");
       setForm({
         nome: "",
         cnpj: "",
@@ -31,7 +32,7 @@ export function FornecedorCreatePage() {
         email: "",
       });
     } catch (error) {
-      alert("Erro ao cadastrar fornecedor!");
+      toast.error("Erro ao cadastrar fornecedor!");
     } finally {
       setLoading(false);
     }

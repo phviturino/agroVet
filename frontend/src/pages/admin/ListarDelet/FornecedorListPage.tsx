@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 
 import { useEffect, useState } from "react";
 import { api } from "../../../api/axios";
@@ -49,7 +50,7 @@ export function FornecedorListPage({ onEdit }: Props) {
       );
     } catch (err) {
       console.error("Erro ao carregar fornecedores:", err);
-      alert("Erro ao carregar lista de fornecedores.");
+      toast.error("Erro ao carregar lista de fornecedores.");
     } finally {
       setLoading(false);
     }
@@ -67,12 +68,12 @@ export function FornecedorListPage({ onEdit }: Props) {
     try {
       await api.delete(`/fornecedores/${id}`);
 
-      alert("Fornecedor excluído com sucesso!");
+      toast.success("Fornecedor excluído com sucesso!");
 
       await carregarFornecedores();
     } catch (err) {
       console.error("Erro ao excluir fornecedor:", err);
-      alert("Erro ao excluir o fornecedor.");
+      toast.error("Erro ao excluir o fornecedor.");
     }
   }
 

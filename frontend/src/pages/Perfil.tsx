@@ -2,6 +2,8 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { validarCPF } from "../utils/validarCPF";
+import { toast } from "react-toastify";
+import "./Perfil.css";
 
 export default function Perfil() {
   const { usuario, carregarPerfil, atualizarPerfil, logout } = useAuth();
@@ -9,8 +11,6 @@ export default function Perfil() {
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [editando, setEditando] = useState(false);
-  const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState("");
 
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
@@ -26,15 +26,19 @@ export default function Perfil() {
     /[^A-Za-z0-9]/.test(senha);
 
   useEffect(() => {
+    const pendente = sessionStorage.getItem("toastPendente");
+    if (pendente) {
+      sessionStorage.removeItem("toastPendente");
+      toast.success(pendente);
+    }
+  }, []);
+
+  useEffect(() => {
     async function buscarPerfil() {
       try {
         await carregarPerfil();
       } catch (erro) {
-        setErro(
-          erro instanceof Error
-            ? erro.message
-            : "Erro ao carregar perfil!"
-        );
+        toast.error(erro instanceof Error ? erro.message : "Erro ao carregar perfil!");
       } finally {
         setCarregando(false);
       }
@@ -51,21 +55,18 @@ export default function Perfil() {
     setTelefone(usuario.telefone ?? "");
     setSenha("");
     setConfirmarSenha("");
-    setErro("");
-    setMensagem("");
     setEditando(true);
   }
 
   function cancelarEdicao() {
     setEditando(false);
-    setErro("");
-    setMensagem("");
     setSenha("");
     setConfirmarSenha("");
   }
 
   function fazerLogout() {
     logout();
+    sessionStorage.setItem("toastPendente", "Você saiu da sua conta.");
     window.location.replace("/login");
   }
 
@@ -74,36 +75,32 @@ export default function Perfil() {
 
     if (salvando) return;
 
-    setErro("");
-    setMensagem("");
 
     if (!nome.trim()) {
-      setErro("Informe seu nome.");
+      toast.warning("Informe seu nome.");
       return;
     }
 
     const cpfLimpo = cpf.replace(/\D/g, "");
 
     if (!validarCPF(cpfLimpo)) {
-      setErro("CPF inválido. Verifique os números informados.");
+      toast.warning("CPF inválido. Verifique os números informados.");
       return;
     }
 
     if (!telefone.trim()) {
-      setErro("Informe seu telefone.");
+      toast.warning("Informe seu telefone.");
       return;
     }
 
     if (senha || confirmarSenha) {
       if (!senhaForte) {
-        setErro(
-          "A senha deve ter pelo menos 8 caracteres, letra maiúscula, minúscula, número e caractere especial."
-        );
+        toast.warning("A senha deve ter pelo menos 8 caracteres, letra maiúscula, minúscula, número e caractere especial.");
         return;
       }
 
       if (senha !== confirmarSenha) {
-        setErro("As senhas não coincidem.");
+        toast.warning("As senhas não coincidem.");
         return;
       }
     }
@@ -130,16 +127,12 @@ export default function Perfil() {
 
       const resultado = await atualizarPerfil(dadosAtualizados);
 
-      setMensagem(resultado);
+      toast.success(resultado || "Perfil atualizado com sucesso!");
       setEditando(false);
       setSenha("");
       setConfirmarSenha("");
     } catch (erro) {
-      setErro(
-        erro instanceof Error
-          ? erro.message
-          : "Erro ao atualizar perfil!"
-      );
+      toast.error(erro instanceof Error ? erro.message : "Erro ao atualizar perfil!");
     } finally {
       setSalvando(false);
     }
@@ -147,7 +140,7 @@ export default function Perfil() {
 
   if (carregando) {
     return (
-      <div className="container py-5">
+      <div className="container py-5 perfil-estado">
         <p>Carregando perfil...</p>
       </div>
     );
@@ -155,10 +148,10 @@ export default function Perfil() {
 
   if (!usuario) {
     return (
-      <div className="container py-5">
+      <div className="container py-5 perfil-estado">
         <h2>Meu Perfil</h2>
         <p className="text-danger">
-          {erro || "Usuário não encontrado."}
+          Usuário não encontrado ou sessão expirada.
         </p>
         <a href="/login" className="btn btn-primary">
           Fazer login
@@ -168,51 +161,31 @@ export default function Perfil() {
   }
 
   return (
-    <div className="container py-5">
+    <div className="container py-5 perfil-estado">
       <h2>Meu Perfil</h2>
       <p>Gerencie suas informações pessoais.</p>
 
-      {mensagem && (
-        <div className="alert alert-success" role="status">
-          {mensagem}
-        </div>
-      )}
-
-      {erro && (
-        <div className="alert alert-danger" role="alert">
-          {erro}
-        </div>
-      )}
-
-      <div className="card mt-4 shadow-sm">
-        <div className="card-body">
+      <div className="card perfil-card">
+        <div className="card-body perfil-card-conteudo">
           {!editando ? (
             <>
-              <p>
-                <strong>Nome:</strong> {usuario.nome}
-              </p>
-              <p>
-                <strong>E-mail:</strong> {usuario.email}
-              </p>
-              <p>
-                <strong>CPF:</strong> {usuario.cpf}
-              </p>
-              <p>
-                <strong>Telefone:</strong> {usuario.telefone}
-              </p>
+              <p className="perfil-dado"><strong>Nome</strong><span>{usuario.nome}</span></p>
+              <p className="perfil-dado"><strong>E-mail</strong><span>{usuario.email}</span></p>
+              <p className="perfil-dado"><strong>CPF</strong><span>{usuario.cpf}</span></p>
+              <p className="perfil-dado"><strong>Telefone</strong><span>{usuario.telefone || "Não informado"}</span></p>
 
-              <div className="d-flex gap-2 flex-wrap">
+              <div className="d-flex gap-2 flex-wrap perfil-acoes">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn perfil-botao-principal"
                   onClick={iniciarEdicao}
                 >
                   Editar perfil
                 </button>
 
                 <button type="button"
-                  className="btn btn-outline-danger"
-                  onClick={logout}
+                  className="btn perfil-botao-sair"
+                  onClick={fazerLogout}
                 >
                   <i className="bi bi-box-arrow-right me-2"></i>
                   Sair da Conta
@@ -220,7 +193,7 @@ export default function Perfil() {
               </div>
             </>
           ) : (
-            <form onSubmit={salvarPerfil}>
+            <form onSubmit={salvarPerfil} className="perfil-formulario">
               <div className="mb-3">
                 <label htmlFor="perfil-nome" className="form-label">
                   Nome
@@ -353,7 +326,7 @@ export default function Perfil() {
               <div className="d-flex gap-2">
                 <button
                   type="submit"
-                  className="btn btn-success"
+                  className="btn perfil-botao-principal"
                   disabled={salvando}
                 >
                   {salvando
@@ -363,7 +336,7 @@ export default function Perfil() {
 
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn perfil-botao-secundario"
                   onClick={cancelarEdicao}
                   disabled={salvando}
                 >
@@ -374,6 +347,6 @@ export default function Perfil() {
           )}
         </div>
       </div>
-    </div>
+      </div>
   );
 }

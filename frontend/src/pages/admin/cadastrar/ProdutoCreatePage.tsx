@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useState, type FormEvent } from "react";
 import { api } from "../../../api/axios.ts";
 
@@ -20,18 +21,18 @@ export function ProdutoCreatePage() {
   async function onFormSubmit(event: FormEvent) {
     event.preventDefault();
 
+    if (loading) return;
     setLoading(true);
-    await api.post("/produtos", form);
-    setLoading(false);
-
-    setForm({
-      nome: "",
-      preço: "",
-      imagem: "",
-      descricao: "",
-    });
-
-    alert("Produto cadastrado com sucesso!");
+    try {
+      await api.post("/produtos", form);
+      setForm({ nome: "", preço: "", imagem: "", descricao: "" });
+      toast.success("Produto cadastrado com sucesso!");
+    } catch (erro) {
+      console.error("Erro ao cadastrar produto:", erro);
+      toast.error("Não foi possível cadastrar o produto.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
