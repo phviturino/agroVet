@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { apiURL } from "../api/constante";
 import ProdutoCard from "../components/ProdutoCard";
+import Paginacao from "../components/Paginacao";
 import "./Produtos.css";
 
 interface Produto {
@@ -18,67 +19,131 @@ interface Avaliacao {
   nota: number;
 }
 
+interface RespostaProdutos {
+  dados: Produto[];
+  paginacao: {
+    paginaAtual: number;
+    limite: number;
+    totalRegistros: number;
+    totalPaginas: number;
+  };
+}
+
 export default function Produtos() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [categorias, setCategorias] = useState<string[]>([]);
   const [categoriaSelecionada, setCategoriaSelecionada] =
-    useState<string>("Todas");
+    useState("Todas");
   const [ordemDecrescente, setOrdemDecrescente] =
-    useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [erro, setErro] = useState<string>("");
+    useState(false);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
+
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(0);
+  const [totalRegistros, setTotalRegistros] = useState(0);
 
   const [searchParams] = useSearchParams();
   const termoBusca = searchParams.get("busca") || "";
 
+  // Reinicia a paginação ao mudar a busca.
+  useEffect(() => {
+    setPaginaAtual(1);
+    setCategoriaSelecionada("Todas");
+  }, [termoBusca]);
+
+  // Carrega todas as categorias disponíveis.
+  useEffect(() => {
+    let ativo = true;
+
+    const carregarCategorias = async () => {
+      try {
+        const resposta = await fetch(`${apiURL}/categorias`);
+
+        if (!resposta.ok) {
+          throw new Error("Erro ao buscar categorias");
+        }
+
+        const dados: { nome: string }[] =
+          await resposta.json();
+
+        if (ativo && Array.isArray(dados)) {
+          setCategorias(
+            Array.from(
+              new Set(
+                dados
+                  .map((categoria) => categoria.nome)
+                  .filter(Boolean)
+              )
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
+      }
+    };
+
+    carregarCategorias();
+
+    return () => {
+      ativo = false;
+    };
+  }, []);
+
+  // Busca os produtos paginados no Back-End.
   useEffect(() => {
     let ativo = true;
 
     setLoading(true);
     setErro("");
-    setCategoriaSelecionada("Todas");
 
     const carregarProdutos = async () => {
       try {
-        const url = termoBusca
-          ? `${apiURL}/produtos?busca=${encodeURIComponent(termoBusca)}`
-          : `${apiURL}/produtos`;
+        const params = new URLSearchParams({
+          page: String(paginaAtual),
+          limit: "8",
+          ordem: ordemDecrescente ? "desc" : "asc"
+        });
 
-        const resposta = await fetch(url);
+        if (termoBusca) {
+          params.set("busca", termoBusca);
+        }
+
+        if (categoriaSelecionada !== "Todas") {
+          params.set("categoria", categoriaSelecionada);
+        }
+
+        const resposta = await fetch(
+          `${apiURL}/produtos?${params.toString()}`
+        );
 
         if (!resposta.ok) {
           throw new Error("Falha ao buscar produtos da API");
         }
 
-        const dados: Produto[] = await resposta.json();
+        const dados: RespostaProdutos =
+          await resposta.json();
 
-        if (!Array.isArray(dados)) {
+        if (
+          !Array.isArray(dados.dados) ||
+          !dados.paginacao
+        ) {
           throw new Error("Resposta inválida da API");
         }
 
         if (!ativo) return;
 
-        setProdutos(dados);
-
-        const categoriasUnicas = Array.from(
-          new Set(
-            dados
-              .map((produto) => produto.categoria)
-              .filter(
-                (categoria): categoria is string =>
-                  Boolean(categoria)
-              )
-          )
-        );
-
-        setCategorias(categoriasUnicas);
-      } catch (erro) {
-        console.error("Erro ao buscar produtos:", erro);
+        setProdutos(dados.dados);
+        setTotalPaginas(dados.paginacao.totalPaginas);
+        setTotalRegistros(dados.paginacao.totalRegistros);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
 
         if (ativo) {
           setProdutos([]);
-          setCategorias([]);
+          setTotalPaginas(0);
+          setTotalRegistros(0);
           setErro("Não foi possível carregar o catálogo.");
         }
       } finally {
@@ -93,14 +158,22 @@ export default function Produtos() {
     return () => {
       ativo = false;
     };
-  }, [termoBusca]);
+  }, [
+    termoBusca,
+    paginaAtual,
+    categoriaSelecionada,
+    ordemDecrescente
+  ]);
 
+  // Carrega as avaliações dos produtos.
   useEffect(() => {
     let ativo = true;
 
     const carregarAvaliacoes = async () => {
       try {
-        const resposta = await fetch(`${apiURL}/avaliacoes`);
+        const resposta = await fetch(
+          `${apiURL}/avaliacoes`
+        );
 
         if (!resposta.ok) {
           throw new Error("Erro ao buscar avaliações");
@@ -111,8 +184,8 @@ export default function Produtos() {
         if (ativo && Array.isArray(dados)) {
           setAvaliacoes(dados);
         }
-      } catch (erro) {
-        console.error("Erro ao carregar avaliações:", erro);
+      } catch (error) {
+        console.error("Erro ao carregar avaliações:", error);
       }
     };
 
@@ -123,19 +196,24 @@ export default function Produtos() {
     };
   }, []);
 
-  const produtosFiltrados = produtos
-    .filter((produto) => {
-      if (categoriaSelecionada === "Todas") {
-        return true;
-      }
-
-      return produto.categoria === categoriaSelecionada;
-    })
-    .sort((a, b) => {
-      return ordemDecrescente
-        ? b.nome.localeCompare(a.nome, "pt-BR")
-        : a.nome.localeCompare(b.nome, "pt-BR");
+  const mudarPagina = (pagina: number) => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
     });
+
+    setPaginaAtual(pagina);
+  };
+
+  const mudarCategoria = (categoria: string) => {
+    setCategoriaSelecionada(categoria);
+    setPaginaAtual(1);
+  };
+
+  const mudarOrdem = () => {
+    setOrdemDecrescente((anterior) => !anterior);
+    setPaginaAtual(1);
+  };
 
   return (
     <main className="produtos-page">
@@ -170,14 +248,11 @@ export default function Produtos() {
               <button
                 key={categoria}
                 type="button"
-                className={`produtos-categoria-btn ${
-                  categoriaSelecionada === categoria
-                    ? "ativo"
-                    : ""
-                }`}
-                onClick={() =>
-                  setCategoriaSelecionada(categoria)
-                }
+                className={`produtos-categoria-btn ${categoriaSelecionada === categoria
+                  ? "ativo"
+                  : ""
+                  }`}
+                onClick={() => mudarCategoria(categoria)}
                 aria-pressed={
                   categoriaSelecionada === categoria
                 }
@@ -193,9 +268,7 @@ export default function Produtos() {
               id="btn-ordenar"
               type="button"
               className="produtos-ordenar"
-              onClick={() =>
-                setOrdemDecrescente(!ordemDecrescente)
-              }
+              onClick={mudarOrdem}
             >
               <span aria-hidden="true">↕</span>
               {ordemDecrescente
@@ -207,7 +280,7 @@ export default function Produtos() {
             <span className="produtos-contagem">
               {loading
                 ? "Carregando produtos..."
-                : `${produtosFiltrados.length} produto(s) encontrado(s)`}
+                : `${totalRegistros} produto(s) encontrado(s)`}
             </span>
           </div>
         </section>
@@ -229,7 +302,7 @@ export default function Produtos() {
             <h2>Ops! Algo deu errado.</h2>
             <p>{erro}</p>
           </div>
-        ) : produtosFiltrados.length === 0 ? (
+        ) : produtos.length === 0 ? (
           <div className="produtos-vazio">
             <h2>Nenhum produto encontrado</h2>
             <p>
@@ -241,7 +314,7 @@ export default function Produtos() {
             className="row row-cols-2 row-cols-md-4 g-4"
             id="lista-produtos"
           >
-            {produtosFiltrados.map((produto) => (
+            {produtos.map((produto) => (
               <ProdutoCard
                 key={produto.id}
                 produto={produto}
@@ -253,6 +326,14 @@ export default function Produtos() {
               />
             ))}
           </div>
+        )}
+
+        {!loading && !erro && (
+          <Paginacao
+            paginaAtual={paginaAtual}
+            totalPaginas={totalPaginas}
+            aoMudarPagina={mudarPagina}
+          />
         )}
 
       </div>

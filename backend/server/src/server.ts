@@ -60,43 +60,104 @@ app.get('/', (req, res) => {
 
 app.use('/api/avaliacoes', avaliacaoRoutes);
 
+
 app.get('/api/produtos', async (req, res) => {
   try {
-    const { busca } = req.query;
+    const { busca, categoria, ordem } = req.query;
 
-    let query = `
-      SELECT
-        p.id,
-        p.id_categoria,
-        p.nome,
-        p.preco AS preco,
-        p.estoque,
-        p.imagem,
-        p.descricao,
-        c.nome AS categoria
-      FROM produto p
-      LEFT JOIN categoria c ON p.id_categoria = c.id
-    `;
+    const pagina = Number(req.query.page ?? 1);
+    const limite = Number(req.query.limit ?? 8);
 
-    const params: unknown[] = [];
+    if (
+      !Number.isSafeInteger(pagina) ||
+      pagina < 1 ||
+      !Number.isSafeInteger(limite) ||
+      limite < 1 ||
+      limite > 100
+    ) {
+      return res.status(400).json({
+        mensagem: 'Parâmetros de paginação inválidos.'
+      });
+    }
+
+    const offset = (pagina - 1) * limite;
+
+    if (!Number.isSafeInteger(offset)) {
+      return res.status(400).json({
+        mensagem: 'Página fora do intervalo permitido.'
+      });
+    }
+
+    const filtros: string[] = [];
+    const params: string[] = [];
 
     if (typeof busca === 'string' && busca.trim()) {
-      query += ' WHERE p.nome LIKE ?';
+      filtros.push('p.nome LIKE ?');
       params.push(`%${busca.trim()}%`);
     }
 
+    if (
+      typeof categoria === 'string' &&
+      categoria.trim() &&
+      categoria !== 'Todas'
+    ) {
+      filtros.push('c.nome = ?');
+      params.push(categoria.trim());
+    }
 
-    const [rows] = await db.query(query, params);
+    const where = filtros.length
+      ? `WHERE ${filtros.join(' AND ')}`
+      : '';
+
+    const [contagem] = await db.query<RowDataPacket[]>(
+      `SELECT COUNT(*) AS total
+       FROM produto p
+       LEFT JOIN categoria c ON p.id_categoria = c.id
+       ${where}`,
+      params
+    );
+
+    const totalRegistros = Number(contagem[0].total);
+    const totalPaginas = Math.ceil(totalRegistros / limite);
+
+    const direcao = ordem === 'desc' ? 'DESC' : 'ASC';
+
+    const [rows] = await db.query(
+      `SELECT
+         p.id,
+         p.id_categoria,
+         p.nome,
+         p.preco AS preco,
+         p.estoque,
+         p.imagem,
+         p.descricao,
+         c.nome AS categoria
+       FROM produto p
+       LEFT JOIN categoria c ON p.id_categoria = c.id
+       ${where}
+       ORDER BY p.nome ${direcao}, p.id ASC
+       LIMIT ? OFFSET ?`,
+      [...params, limite, offset]
+    );
 
     const produtos = ProdutoService.converterProdutos(
       rows as ProdutoRow[]
     );
 
-    res.json(produtos);
+    return res.json({
+      dados: produtos,
+      paginacao: {
+        paginaAtual: pagina,
+        limite,
+        totalRegistros,
+        totalPaginas
+      }
+    });
 
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
-    res.status(500).json({
+
+    return res.status(500).json({
       mensagem: 'Erro interno ao buscar produtos.'
     });
   }
@@ -943,7 +1004,7 @@ app.put('/api/perfil', authMiddleware, async (req, res) => {
 });
 
 app.get(
-  '/api/admin/verificar' , authMiddleware, adminMiddleware, (req, res) => {
+  '/api/admin/verificar', authMiddleware, adminMiddleware, (req, res) => {
     res.status(200).json({
       mensagem: 'Acesso administrativo autorizado!'
     });
