@@ -24,10 +24,10 @@ export function AvaliacaoCreatePage() {
 
     async function carregarProdutos() {
       try {
-        const response = await api.get<Produto[]>("/produtos");
+        const response = await api.get<{ dados: Produto[] }>("/produtos?page=1&limit=100")
 
         if (ativo) {
-          setProdutos(response.data);
+          setProdutos(response.data.dados);
         }
       } catch (error) {
         console.error("Erro ao carregar produtos:", error);
@@ -131,7 +131,8 @@ export function AvaliacaoCreatePage() {
         <div className="alert alert-danger">
           {erro}
         </div>
-      )}
+      )}
+
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

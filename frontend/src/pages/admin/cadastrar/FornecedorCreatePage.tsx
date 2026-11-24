@@ -1,5 +1,7 @@
+
 import { toast } from "react-toastify";
 import { useState, type FormEvent } from "react";
+import { isAxiosError } from "axios";
 import { api } from "../../../api/axios";
 
 type Fornecedor = {
@@ -9,37 +11,66 @@ type Fornecedor = {
   email: string;
 };
 
+const formularioInicial: Fornecedor = {
+  nome: "",
+  cnpj: "",
+  telefone: "",
+  email: "",
+};
+
 export function FornecedorCreatePage() {
-  const [form, setForm] = useState<Fornecedor>({
-    nome: "",
-    cnpj: "",
-    telefone: "",
-    email: "",
-  });
+  const [form, setForm] = useState<Fornecedor>(formularioInicial);
   const [loading, setLoading] = useState(false);
 
   async function onFormSubmit(event: FormEvent) {
     event.preventDefault();
+
+    if (loading) return;
+
+    if (!form.nome.trim()) {
+      toast.warning("Informe o nome do fornecedor.");
+      return;
+    }
+
+    if (
+      form.email.trim() &&
+      !/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(form.email.trim())
+    ) {
+      toast.warning("Informe um e-mail válido.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await api.post("/fornecedores", form);
-      toast.success("Fornecedor cadastrado com sucesso!");
-      setForm({
-        nome: "",
-        cnpj: "",
-        telefone: "",
-        email: "",
+      await api.post("/fornecedores", {
+        nome: form.nome.trim(),
+        cnpj: form.cnpj.trim() || null,
+        telefone: form.telefone.trim() || null,
+        email: form.email.trim() || null,
       });
-    } catch (error) {
-      toast.error("Erro ao cadastrar fornecedor!");
+
+      toast.success("Fornecedor cadastrado com sucesso!");
+      setForm(formularioInicial);
+    } catch (erro) {
+      console.error("Erro ao cadastrar fornecedor:", erro);
+
+      toast.error(
+        isAxiosError(erro)
+          ? erro.response?.data?.mensagem ||
+            "Não foi possível cadastrar o fornecedor."
+          : "Não foi possível cadastrar o fornecedor."
+      );
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={onFormSubmit} className="card p-4 shadow-sm border-0 my-4">
+    <form
+      onSubmit={onFormSubmit}
+      className="card p-4 shadow-sm border-0 my-4"
+    >
       <h2>Novo Fornecedor</h2>
 
       <div className="mb-3">
@@ -48,7 +79,9 @@ export function FornecedorCreatePage() {
           type="text"
           className="form-control"
           value={form.nome}
-          onChange={(ev) => setForm({ ...form, nome: ev.target.value })}
+          onChange={(ev) =>
+            setForm({ ...form, nome: ev.target.value })
+          }
           required
         />
       </div>
@@ -59,17 +92,21 @@ export function FornecedorCreatePage() {
           type="text"
           className="form-control"
           value={form.cnpj}
-          onChange={(ev) => setForm({ ...form, cnpj: ev.target.value })}
+          onChange={(ev) =>
+            setForm({ ...form, cnpj: ev.target.value })
+          }
         />
       </div>
 
       <div className="mb-3">
         <label className="form-label">Telefone</label>
         <input
-          type="text"
+          type="tel"
           className="form-control"
           value={form.telefone}
-          onChange={(ev) => setForm({ ...form, telefone: ev.target.value })}
+          onChange={(ev) =>
+            setForm({ ...form, telefone: ev.target.value })
+          }
         />
       </div>
 
@@ -79,11 +116,17 @@ export function FornecedorCreatePage() {
           type="email"
           className="form-control"
           value={form.email}
-          onChange={(ev) => setForm({ ...form, email: ev.target.value })}
+          onChange={(ev) =>
+            setForm({ ...form, email: ev.target.value })
+          }
         />
       </div>
 
-      <button type="submit" className="btn btn-info text-white fw-bold" disabled={loading}>
+      <button
+        type="submit"
+        className="btn btn-info text-white fw-bold"
+        disabled={loading}
+      >
         {loading ? "Salvando..." : "Salvar Fornecedor"}
       </button>
     </form>
